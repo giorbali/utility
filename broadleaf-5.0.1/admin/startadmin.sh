@@ -19,7 +19,7 @@ cd $cwd
 mvn dependency:copy@copy-agent
 
 # Start up the embedded HSQLDB database in the background. If it's already started this won't do anything
-mvn antrun:run@hsqldb-start &
+#mvn antrun:run@hsqldb-start &
 
 # grab the path to the JRebel agent and set up a JREBEL_AGENT variable to pass to the JVM
 if [ -z ${JREBEL_PATH+x} ]; then JREBEL_AGENT=""; else JREBEL_AGENT="-agentpath:$JREBEL_PATH"; fi

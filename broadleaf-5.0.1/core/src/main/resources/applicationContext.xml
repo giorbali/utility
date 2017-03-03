@@ -36,4 +36,5 @@
             </list>
         </property>
     </bean>
+    <bean id="blFulfillmentGroupItemStrategy" class="org.broadleafcommerce.core.order.strategy.NullFulfillmentGroupItemStrategyImpl"/>
 </beans>

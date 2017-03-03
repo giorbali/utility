@@ -12,20 +12,19 @@
                 
                 <div id="maker" th:utext="*{manufacturer}"></div>
                 
-                <div id="price" th:if="${#object instanceof T(org.broadleafcommerce.core.catalog.domain.ProductBundle)}">
+                <!-- <div id="price" th:if="${#object instanceof T(org.broadleafcommerce.core.catalog.domain.ProductBundle)}">
                     <div blc:price="*{salePrice}" th:if="*{onSale}" th:classappend="*{onSale}? 'sale'"></div>
                     <div blc:price="*{retailPrice}" th:classappend="*{onSale}? 'has-sale'"></div>
-                </div>
-                <div id="price" th:unless="${#object instanceof T(org.broadleafcommerce.core.catalog.domain.ProductBundle)}">
+                </div> -->
+                <!-- <div id="price" th:unless="${#object instanceof T(org.broadleafcommerce.core.catalog.domain.ProductBundle)}">
+                    <p>this is not bill product</p>
                     <div blc:price="*{defaultSku.salePrice}" th:if="*{defaultSku.onSale}" th:classappend="*{defaultSku.onSale}? 'sale'"></div>
                     <div blc:price="*{defaultSku.retailPrice}" th:classappend="*{defaultSku.onSale}? 'has-sale'"></div>
-                </div>
+                </div> -->
                 
                 <div class="product-options" th:substituteby="catalog/partials/productOptions"/>                                
                 
-                <th:block th:with="checkInventory=*{defaultSku.inventoryType?.type == 'CHECK_QUANTITY'},
-                                   availableInventory=${checkInventory ? #object.defaultSku.quantityAvailable != null and #object.defaultSku.quantityAvailable != 0 : true},
-                                   inCart=${cart.containsSku(#object.defaultSku) and #lists.isEmpty(product.productOptions)}">
+               <th:block th:with="inCart=${cart.containsSku(#object.defaultSku) and #lists.isEmpty(product.productOptions)}"> 
                     <blc:form method="POST" th:action="@{/cart/add}">
                         <div class="product-option-nonjs" th:each="productOption : *{productOptions}" th:object="${productOption}">
                             <div class="form50">
@@ -35,21 +34,29 @@
                                 </select>
                             </div>
                         </div>
-                        
+                        <div id="customerid">
+                        <input type="text" name="customerid" value="enter customer id" class="field50"/>
+                        </div>
+                        <div id="invoice">
+                        <input type="text" name="invoice" value="enter invoice id" class="field50"/>
+                        </div>
+                        <div id="priceInput">
+                        <input type="text" name="priceInput" value="enter price" class="field50"/>
+                        </div>
                         <div th:utext="*{longDescription}" id="description"></div>
                         
-                        <div id="inventory" th:if="${checkInventory}">
+                        <!-- <div id="inventory" th:if="${checkInventory}">
                             <b>Available inventory:</b> <span th:utext="*{defaultSku.quantityAvailable == null ? '0' : defaultSku.quantityAvailable}" />
                             <div th:if="${!availableInventory}" class="out_of_stock">
                                 <a disabled="disabled" class="big-button gray-button">Out of Stock</a>
                             </div>
-                        </div>
+                        </div> -->
                         
                         <div th:class="*{'productActions' + id}">
                             <div class="in_cart" th:classappend="${!inCart}? ' hidden'">
                                 <a class="modalcart big-button gray-button" th:href="@{/cart}">In Cart!</a>
                             </div>
-                            <div class="add_to_cart" th:classappend="${inCart or !availableInventory}? ' hidden'">
+                            <div class="add_to_cart" th:classappend="${inCart}? ' hidden'">
                                 <input type="hidden" name="productId" th:value="*{id}" />
                                 <input type="hidden" name="quantity" value="1" />
                                 <input type="submit" class="addToCart big red" th:value="#{product.buyNow}"/>
@@ -86,7 +93,7 @@
                     </blc:form>
                 </div>
                     
-                <p>
+                <!-- <p>
                     Share this Sauce:
                     <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
                         <a class="addthis_button_preferred_1"></a>
@@ -97,7 +104,7 @@
                         <a class="addthis_counter addthis_bubble_style"></a>
                     </div>
                     <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-5006d3e47d6ace5d"></script>
-                </p>
+                </p> -->
                 
             </div>
             
@@ -107,7 +114,7 @@
                 </a>
             </div>
             
-            <div id="product_thumbs_container">
+           <!--  <div id="product_thumbs_container">
                 <ul id="product_thumbs" class="clearfix">
                     <li>
                         <a th:if="*{media['primary']}" href="javascript:;" class="zoomThumbActive" th:rel="${'{ gallery: ''gal1'', smallimage: ''__@{*{media['primary'].url}+'?browse'}__'', largeimage: ''__@{*{media['primary'].url}}__'' }'}" th:attr="data-tags=*{media['primary'].tags}">
@@ -125,9 +132,9 @@
                         <p class="thumbs_nav" th:utext="${iterStat.count + 1} + ' of ' + *{#maps.size(media) > 3 ? 3 : #maps.size(media)}"></p>
                     </li>
                 </ul>
-            </div>
+            </div> -->
             
-            <div class="clearfix"></div>
+            <!-- <div class="clearfix"></div>
                 <div id="customer-reviews-container">
                     <blc:ratings itemId="${product.id}" />
                     <div th:if="${ratingSummary}" th:object="${ratingSummary}">
@@ -218,10 +225,10 @@
                         <a th:if="${ratingSummary}" href="#" th:href="@{/login}" class="small dark account">Login to create a review</a>
                         <a th:unless="${ratingSummary}" th:href="@{/login}" class="account">Login and be the first to write a review!</a>
                     </div>
-                </div>          
+                </div>  -->         
         </section>
     
-        <section id="right_column">
+        <!-- <section id="right_column">
             <header>Featured Products</header>
             <div id="options">
                 <div class="section">
@@ -231,7 +238,7 @@
                     </ul>
                 </div>                                  
             </div>
-        </section>              
+        </section>  -->             
     </div>
     
 </th:block>

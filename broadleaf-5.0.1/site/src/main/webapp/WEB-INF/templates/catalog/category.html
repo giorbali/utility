@@ -17,7 +17,7 @@
 	            </header>
 	            
 	            <ul th:if="${products}" id="products" class="group">
-	                <li th:each="product : ${products}" th:object="${product}" th:include="catalog/partials/productListItem" class="product_container"></li>
+	                <li th:each="product : ${products}" th:object="${product}" th:include="catalog/partials/productListItem2" class="product_container"></li>
 	            </ul>
 	            
 	            <ul th:if="${skus}" id="products" class="group">

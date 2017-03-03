@@ -45,20 +45,9 @@
                 <img id="en_GB" src="img/flags/United-Kingdom.png" blc:src="@{/img/flags/United-Kingdom.png}" alt="United Kingdom" title="English (UK)"/>
             </a>
 
-            <a  href="javascript:;" onclick="BLC.addUrlParam(document.location.search, 'blLocaleCode', 'es_MX')">
-                <img id="es_MX" src="img/flags/Mexico.png" blc:src="@{/img/flags/Mexico.png}" alt="Mexico" title="Spanish (Mexico)"/>
-            </a>
-
-            <a href="javascript:;" onclick="BLC.addUrlParam(document.location.search, 'blLocaleCode', 'es_ES')">
-                <img id="es_ES" src="img/flags/Mexico.png" blc:src="@{/img/flags/Spain.png}" alt="Spain" title="Spanish (Spain)"/>
-            </a>
-            <a href="javascript:;" onclick="BLC.addUrlParam(document.location.search, 'blLocaleCode', 'fr_FR')">
-                <img id="fr_FR" src="img/flags/Mexico.png" blc:src="@{/img/flags/France.png}" alt="France" title="French (France)" />
-            </a>
-
         </div>
 
-        <div id="logo"><h1><a th:href="@{/}">The Heat Clinic Home</a></h1></div>
+        <div id="logo"><h1><a th:href="@{/}">Utility</a></h1></div>
         
         <div id="search">
             <blc:form th:action="@{/search}" method="GET">

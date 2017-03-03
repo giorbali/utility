@@ -17,7 +17,17 @@
 package com.mycompany.controller.cart;
 
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.broadleafcommerce.core.catalog.domain.Product;
+import org.broadleafcommerce.core.catalog.service.CatalogService;
 import org.broadleafcommerce.core.inventory.service.InventoryUnavailableException;
 import org.broadleafcommerce.core.order.service.call.AddToCartItem;
 import org.broadleafcommerce.core.order.service.exception.AddToCartException;
@@ -28,6 +38,8 @@ import org.broadleafcommerce.core.order.service.exception.UpdateCartException;
 import org.broadleafcommerce.core.pricing.service.exception.PricingException;
 import org.broadleafcommerce.core.web.controller.cart.BroadleafCartController;
 import org.broadleafcommerce.core.web.order.CartState;
+import org.broadleafcommerce.core.workflow.SequenceProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,19 +49,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.bali.core.order.service.call.AddCustomPriceToCartItem;
 
 @Controller
 @RequestMapping("/cart")
 public class CartController extends BroadleafCartController {
+	
+	private static final Log logger = LogFactory.getLog(CartController.class);
     
     @Value("${solr.index.use.sku}")
     protected boolean useSku;
+    @Autowired
+    private CatalogService catalogService;
+    @Autowired
+    private SequenceProcessor blAddItemWorkflow;
     
     @Override
     @RequestMapping("")
@@ -70,7 +83,8 @@ public class CartController extends BroadleafCartController {
      */
     @RequestMapping(value = "/add", produces = "application/json")
     public @ResponseBody Map<String, Object> addJson(HttpServletRequest request, HttpServletResponse response, Model model,
-            @ModelAttribute("addToCartItem") AddToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
+            @ModelAttribute("addToCartItem") AddCustomPriceToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
+    	blAddItemWorkflow.getActivities().forEach(action -> logger.info("activity : " + action.getBeanName()));
         Map<String, Object> responseMap = new HashMap<String, Object>();
         try {
             super.add(request, response, model, addToCartItem);
