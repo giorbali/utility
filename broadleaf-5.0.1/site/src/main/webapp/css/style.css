@@ -1403,15 +1403,15 @@ ul.payment_methods li {
         }
     
 #product_main_image {
-    width: 400px;
-    height: 400px;
+    width: 200px;
+    height: 200px;
     margin: 20px 0 0 20px;
     float: left;
 }
 
     #product_main_image img#main_image {
-        width: 400px;
-        max-height: 400px;
+        width: 200px;
+        max-height: 200px;
     }
 
 .product-options {
@@ -1451,7 +1451,7 @@ ul.payment_methods li {
 }
 
 #product_content {
-    width: 280px;
+    width: 380px;
     margin-right: 20px;
     font-size: 13px;
     line-height: 18px;

@@ -22,26 +22,29 @@
                     <div blc:price="*{defaultSku.retailPrice}" th:classappend="*{defaultSku.onSale}? 'has-sale'"></div>
                 </div> -->
                 
-                <div class="product-options" th:substituteby="catalog/partials/productOptions"/>                                
+                <!-- <div class="product-options" th:substituteby="catalog/partials/productOptions"/> -->                                
                 
                <th:block th:with="inCart=${cart.containsSku(#object.defaultSku) and #lists.isEmpty(product.productOptions)}"> 
-                    <blc:form method="POST" th:action="@{/cart/add}">
-                        <div class="product-option-nonjs" th:each="productOption : *{productOptions}" th:object="${productOption}">
-                            <div class="form50">
+                    <blc:form method="POST" th:action="@{/cart/add}" action="">
+                        <!-- <div class="product-option-nonjs" th:each="productOption : *{productOptions}" th:object="${productOption}">
+                            <div class="form66"> 
                                 <label th:utext="*{label}"></label>
                                 <select th:name="${'itemAttributes[' + productOption.attributeName + ']'}">
                                     <option th:each="optionValue : *{allowedValues}" th:object="${optionValue}" th:utext="*{attributeValue}"></option>
                                 </select>
                             </div>
+                        </div> -->
+                        <div id="account_area">
+                        <label for="accountnumberid"  th:text="#{account.number}">Accountnumber</label>
+                        <input type="text" id="accountnumberid" name="accountnumber" class="field66"/>
                         </div>
-                        <div id="customerid">
-                        <input type="text" name="customerid" value="enter customer id" class="field50"/>
+                        <div id="address_area">
+                        <label for="addrid" th:text="#{account.address}" >Address</label>
+                        <input type="text" id="addrid" name="address" class="field66"/>
                         </div>
-                        <div id="invoice">
-                        <input type="text" name="invoice" value="enter invoice id" class="field50"/>
-                        </div>
-                        <div id="priceInput">
-                        <input type="text" name="priceInput" value="enter price" class="field50"/>
+                        <div id="amount_area">
+                        <label for="amountid" th:text="#{account.amount}">Amount</label>
+                        <input type="text" id="amountid" name="amount" class="field66"/>
                         </div>
                         <div th:utext="*{longDescription}" id="description"></div>
                         
@@ -59,14 +62,14 @@
                             <div class="add_to_cart" th:classappend="${inCart}? ' hidden'">
                                 <input type="hidden" name="productId" th:value="*{id}" />
                                 <input type="hidden" name="quantity" value="1" />
-                                <input type="submit" class="addToCart big red" th:value="#{product.buyNow}"/>
+                                <input type="submit" class="addToCart big red" th:value="#{product.payNow}"/>
                             </div>
                             <p class="error" th:if="${param.errorMessage}" th:utext="${param.errorMessage[0]}"></p>
                         </div>
                     </blc:form>
                 </th:block>
     
-                <div th:if="${customer.loggedIn}" th:remove="tag">
+                <!-- <div th:if="${customer.loggedIn}" th:remove="tag">
 
                     <blc:form method="POST" th:action="@{/account/wishlist/add}">
                         <div class="product-option-nonjs" th:each="productOption : *{productOptions}" th:object="${productOption}">
@@ -91,7 +94,7 @@
                             </div>
                         </div>
                     </blc:form>
-                </div>
+                </div> -->
                     
                 <!-- <p>
                     Share this Sauce:

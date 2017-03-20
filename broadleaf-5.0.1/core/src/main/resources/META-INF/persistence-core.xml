@@ -6,6 +6,8 @@
              
     <persistence-unit name="blPU" transaction-type="RESOURCE_LOCAL">
         <non-jta-data-source>jdbc/web</non-jta-data-source>
+        <class>com.bali.core.order.domain.UtilityOrderItemImpl</class>
+        <class>com.bali.core.catalog.domain.UtilityCustomerImpl</class>
         <exclude-unlisted-classes/>
     </persistence-unit>
     

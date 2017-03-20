@@ -2,7 +2,7 @@
     <head>
         <title>Cart</title>
     </head>
-
+    
     <div id="cart" class="cart_modal" layout:fragment="content" th:fragment="ajax">
         <table th:substituteby="cart/partials/cartProductsTableCustom"></table>
     
@@ -23,7 +23,7 @@
                     <input type="hidden" name="TRANSACTION_AMT" th:value="${cart.total}"/>
                     <input type="hidden" name="ORDER_ID" th:value="${cart.id}"/>
                     <input type="hidden" name="COMPLETE_CHECKOUT_ON_CALLBACK" value="false"/>
-                    <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;" alt="Submit Form" />
+                    <!-- <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" align="left" style="margin-right:7px;" alt="Submit Form" /> -->
                 </form>
                 <div class="clearfix"></div>
                 <a th:href="@{/}" target="_top">&laquo; <span th:utext="#{cart.continueShopping}">Continue Shopping</span></a>
@@ -31,7 +31,7 @@
         </div>
         <p class="error" th:if="${param.errorMessage}" th:utext="${param.errorMessage[0]}"></p>
         <p class="error" th:if="${errorMessage}" th:utext="${errorMessage}"></p>
-        <blc:form id="cart_promo" method="POST" th:action="@{/cart/promo}">
+        <!-- <blc:form id="cart_promo" method="POST" th:action="@{/cart/promo}">
             <label for="promoCode"><span th:utext="#{cart.promoCode}">Promo Code</span>:</label>
             <input id="promoCode" name="promoCode" type="text" th:value="*{promoCode}" value="" autocomplete="off"/>
             <input type="submit" id="addPromo" name="addPromo" th:value="#{cart.applyDiscount}" class="small red" />
@@ -39,7 +39,7 @@
                 <div class="promo"><span th:utext="*{offerCode}" th:remove="tag"/> <a class="remove_promo" th:href="@{/cart/promo/remove(offerCodeId=*{id})}"><i class="icon-remove"></i></a></div>
             </div>
             <div id="cart_promo_error" style="display: none;"></div>
-        </blc:form>
+        </blc:form> -->
         
         <div id="blc-extra-data" class="hidden" th:utext="${blcextradata}" th:if="${!#strings.isEmpty(blcextradata)}"></div>
     </div>

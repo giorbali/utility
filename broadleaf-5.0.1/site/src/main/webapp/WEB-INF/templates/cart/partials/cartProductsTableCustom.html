@@ -1,10 +1,9 @@
 <table style="width: 100%">
 	<thead>
 		<tr>
-			<th ><span th:utext="#{cart.item}">Item</span></th>
-			<th><span th:utext="#{cart.amount}">Amount</span> </th>
-			<!-- <th><span th:utext="#{cart.totalSavings}">Total Savings</span></th> -->
-			<th><span th:utext="#{cart.total}">Total</span></th>
+			<th><span th:utext="#{cart.item}">Item</span></th>
+			<th><span th:utext="#{cart.account}">Account</span></th>
+			<th><span th:utext="#{cart.amount}">Amount</span></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -25,11 +24,11 @@
 						th:if="${optionValue.attributeValue == item.sku.skuMedia['alt2']?.tags}"
 						blc:src="@{*{sku.skuMedia['alt2'].url} + '?thumbnail'}" width="60"
 						th:alt="*{sku.name}" />
-				</th:block> <img
-				th:if="*{#lists.isEmpty(sku.productOptionValues) and sku.skuMedia['primary'] != null}"
+				</th:block> <img th:if="*{sku.skuMedia['primary'] != null}"
 				blc:src="@{*{sku.skuMedia['primary']?.url} + '?thumbnail'}"
 				width="60" th:alt="*{sku.name}" /></td>
-				 <td align="center" th:if="*{sku.salePrice}"><span  blc:price="*{sku.id}" ></span></td>
+			<td align="center"><span th:text="*{accountnumber}"></span></td>
+			<td align="center"><span blc:price="*{amount}"></span></td>
 			<!-- <td class="name"><a
 				th:unless="${@blSystemPropertiesService.resolveBooleanSystemProperty('solr.index.use.sku')}"
 				th:href="@{*{product.url}}" th:utext="*{product.name}"></a> <a

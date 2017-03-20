@@ -30,7 +30,7 @@
 	<bean p:order="1000" id="blValidateAddRequestActivity" class="com.bali.core.order.service.workflow.DummyAddOrderItemActivity" />
 	<bean p:order="2000" id="blCheckAddAvailabilityActivity" class="com.bali.core.order.service.workflow.DummyAddOrderItemActivity" />
 	<bean p:order="3000" id="blAddOrderItemActivity" class="com.bali.core.order.service.workflow.DummyAddOrderItemActivity" />
-	<bean p:order="3100" id="baliAddOrderItemActivity" class="com.bali.core.order.service.workflow.AddOrderItemActivityCustom" />
+	<bean p:order="3100" id="baliAddOrderItemActivity" class="com.bali.core.order.service.workflow.AddUtilityOrderItemActivity" />
 	
 	<bean id="blAddItemWorkflow" class="org.broadleafcommerce.core.workflow.SequenceProcessor">
 		<property name="activities">

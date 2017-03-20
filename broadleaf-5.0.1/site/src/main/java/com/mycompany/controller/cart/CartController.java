@@ -39,6 +39,9 @@ import org.broadleafcommerce.core.pricing.service.exception.PricingException;
 import org.broadleafcommerce.core.web.controller.cart.BroadleafCartController;
 import org.broadleafcommerce.core.web.order.CartState;
 import org.broadleafcommerce.core.workflow.SequenceProcessor;
+import org.broadleafcommerce.profile.core.domain.Customer;
+import org.broadleafcommerce.profile.core.service.CustomerService;
+import org.broadleafcommerce.profile.web.core.CustomerState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -49,7 +52,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bali.core.order.service.call.AddCustomPriceToCartItem;
+import com.bali.core.order.service.call.AddUtilityToCartItem;
 
 @Controller
 @RequestMapping("/cart")
@@ -63,11 +66,14 @@ public class CartController extends BroadleafCartController {
     private CatalogService catalogService;
     @Autowired
     private SequenceProcessor blAddItemWorkflow;
+    @Autowired
+    private CustomerService customerService;
     
     @Override
     @RequestMapping("")
     public String cart(HttpServletRequest request, HttpServletResponse response, Model model) throws PricingException {
         String returnPath = super.cart(request, response, model);
+        Customer createCustomer = customerService.createCustomer();
         if (isAjaxRequest(request)) {
             returnPath += " :: ajax";
         }
@@ -81,10 +87,9 @@ public class CartController extends BroadleafCartController {
      * the necessary attributes. By using the @ResposeBody tag, Spring will automatically use Jackson to convert the
      * returned object into JSON for easy processing via JavaScript.
      */
-    @RequestMapping(value = "/add", produces = "application/json")
+    @RequestMapping(value = "/addOrg", produces = "application/json")
     public @ResponseBody Map<String, Object> addJson(HttpServletRequest request, HttpServletResponse response, Model model,
-            @ModelAttribute("addToCartItem") AddCustomPriceToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
-    	blAddItemWorkflow.getActivities().forEach(action -> logger.info("activity : " + action.getBeanName()));
+            @ModelAttribute("addToCartItem") AddToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
         Map<String, Object> responseMap = new HashMap<String, Object>();
         try {
             super.add(request, response, model, addToCartItem);
@@ -123,18 +128,71 @@ public class CartController extends BroadleafCartController {
     }
     
     /*
+     * The Heat Clinic does not show the cart when a product is added. Instead, when the product is added via an AJAX
+     * POST that requests JSON, we only need to return a few attributes to update the state of the page. The most
+     * efficient way to do this is to call the regular add controller method, but instead return a map that contains
+     * the necessary attributes. By using the @ResposeBody tag, Spring will automatically use Jackson to convert the
+     * returned object into JSON for easy processing via JavaScript.
+     */
+    @RequestMapping(value = "/addutility", produces = "application/json")
+    public String addUtilityJson(HttpServletRequest request, HttpServletResponse response, Model model,
+    		@ModelAttribute("addToCartItem") AddUtilityToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
+    	blAddItemWorkflow.getActivities().forEach(action -> logger.info("activity : " + action.getBeanName()));
+    	Map<String, Object> responseMap = new HashMap<String, Object>();
+    	try {
+    		super.add(request, response, model, addToCartItem);
+    		
+    		if (addToCartItem.getItemAttributes() == null || addToCartItem.getItemAttributes().size() == 0) {
+    			responseMap.put("productId", addToCartItem.getProductId());
+    		}
+    		responseMap.put("productName", catalogService.findProductById(addToCartItem.getProductId()).getName());
+    		responseMap.put("quantityAdded", addToCartItem.getQuantity());
+    		responseMap.put("cartItemCount", String.valueOf(CartState.getCart().getItemCount()));
+    		responseMap.put("accountnumber", String.valueOf(addToCartItem.getAccountnumber()));
+    		responseMap.put("address", String.valueOf(addToCartItem.getAddress()));
+    		responseMap.put("amount", String.valueOf(addToCartItem.getAmount()));
+    		if (addToCartItem.getItemAttributes() == null || addToCartItem.getItemAttributes().size() == 0) {
+    			// We don't want to return a productId to hide actions for when it is a product that has multiple
+    			// product options. The user may want the product in another version of the options as well.
+    			responseMap.put("productId", addToCartItem.getProductId());
+    		}
+    		if(useSku) {
+    			responseMap.put("skuId", addToCartItem.getSkuId());
+    		}
+    	} catch (AddToCartException e) {
+    		if (e.getCause() instanceof RequiredAttributeNotProvidedException) {
+    			responseMap.put("error", "allOptionsRequired");
+    		} else if (e.getCause() instanceof ProductOptionValidationException) {
+    			ProductOptionValidationException exception = (ProductOptionValidationException) e.getCause();
+    			responseMap.put("error", "productOptionValidationError");
+    			responseMap.put("errorCode", exception.getErrorCode());
+    			responseMap.put("errorMessage", exception.getMessage());
+    			//blMessages.getMessage(exception.get, lfocale))
+    		} else if (e.getCause() instanceof InventoryUnavailableException) {
+    			responseMap.put("error", "inventoryUnavailable");
+    		} else {
+    			throw e;
+    		}
+    	}
+    	
+    	return "redirect:/";
+    }
+    
+    /*
      * The Heat Clinic does not support adding products with required product options from a category browse page
      * when JavaScript is disabled. When this occurs, we will redirect the user to the full product details page 
      * for the given product so that the required options may be chosen.
      */
     @RequestMapping(value = "/add", produces = { "text/html", "*/*" })
     public String add(HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes redirectAttributes,
-            @ModelAttribute("addToCartItem") AddToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
+            @ModelAttribute("addToCartItem") AddUtilityToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
         try {
+        	Customer customer = CustomerState.getCustomer(request);
             return super.add(request, response, model, addToCartItem);
         } catch (AddToCartException e) {
             Product product = catalogService.findProductById(addToCartItem.getProductId());
-            return "redirect:" + product.getUrl();
+//            return "redirect:" + product.getUrl();
+            return "redirect:/";
         }
     }
     
