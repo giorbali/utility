@@ -2,7 +2,13 @@
     <div id="header_content">
         <div id="cart_info">
 
-            <div th:if="${customer.anonymous}"  th:remove="tag">
+			<div th:object="${session.user}">
+				<p th:if="${session.user}">
+					Name: <span th:text="*{id}">Sebastian</span>.
+				</p>
+			</div>
+
+			<div th:if="${customer.anonymous}"  th:remove="tag">
 
                 <a class="account" th:href="@{/login}">
                     <span th:utext="#{home.login}">Login</span>
@@ -14,7 +20,8 @@
                 &nbsp;|&nbsp; 
             </div>
             <div th:unless="${customer.anonymous}" th:remove="tag">
-                <span><span th:utext="#{home.welcome}">Welcome</span>, <a class="my-account" th:href="@{/account}" th:utext="${customer.firstName}"></a><span th:if="${customer instanceof T(com.bali.core.catalog.domain.UtilityCustomerImpl)}" th:text="${customer.getClass().toString()}"></span></span>
+                <span><span th:utext="#{home.welcome}">Welcome</span>, <a class="my-account" th:href="@{/account}" th:utext="${customer.firstName}"></a>
+                <span th:text=" | Saldo : ${customer.saldo}"></span></span>
                 &nbsp;|&nbsp; 
                 <a th:href="@{/logout}">
                     <span th:utext="#{home.logout}">Logout</span>

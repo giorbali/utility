@@ -71,6 +71,7 @@ public class CheckoutController extends BroadleafCheckoutController {
 
     @RequestMapping(value = "/checkout/complete", method = RequestMethod.POST)
     public String processCompleteCheckoutOrderFinalized(RedirectAttributes redirectAttributes) throws PaymentException {
+    	baseConfirmationRedirect = "redirect:/confirmation2";
         return super.processCompleteCheckoutOrderFinalized(redirectAttributes);
     }
 

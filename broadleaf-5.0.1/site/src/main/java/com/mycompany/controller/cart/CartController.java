@@ -52,6 +52,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.bali.core.catalog.domain.UtilityCustomer;
 import com.bali.core.order.service.call.AddUtilityToCartItem;
 
 @Controller
@@ -187,7 +188,10 @@ public class CartController extends BroadleafCartController {
     public String add(HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes redirectAttributes,
             @ModelAttribute("addToCartItem") AddUtilityToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
         try {
-        	Customer customer = CustomerState.getCustomer(request);
+        	UtilityCustomer customer = (UtilityCustomer)CustomerState.getCustomer(request);
+        	if(customer.getSaldo() == null || customer.getSaldo() <= 0d ){
+        		customer.setSaldo(100d);
+        	}
             return super.add(request, response, model, addToCartItem);
         } catch (AddToCartException e) {
             Product product = catalogService.findProductById(addToCartItem.getProductId());

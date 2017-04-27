@@ -10,21 +10,10 @@
 </head>
 
 <body th:class="${'locale-' + session.blLocale.localeCode}">
+test
     <div id="notification_bar"></div>
     <header th:substituteby="layout/partials/header" />
     
-    <table>
-            <tr>
-                <td>My context attribute</td>
-                <!-- Retrieves the ServletContext attribute 'myContextAttribute' -->
-            </tr>
-            <tr th:each="attr : ${#ctx.servletContext.getAttributeNames()}">
-                <td th:text="${attr}">javax.servlet.context.tempdir</td>
-            </tr>
-        </table>
-    <div id="test">
-            <span th:text="${customer.firstName}"></span>
-        </div>
     <div id="content" class="width_setter group" role="main">
         <nav th:substituteby="layout/partials/nav" />
 
