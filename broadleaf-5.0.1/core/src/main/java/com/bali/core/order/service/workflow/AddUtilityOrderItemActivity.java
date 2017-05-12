@@ -1,5 +1,6 @@
 package com.bali.core.order.service.workflow;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -20,10 +21,12 @@ import org.broadleafcommerce.core.workflow.Activity;
 import org.broadleafcommerce.core.workflow.BaseActivity;
 import org.broadleafcommerce.core.workflow.ProcessContext;
 import org.broadleafcommerce.core.workflow.SequenceProcessor;
+import org.broadleafcommerce.profile.core.domain.Customer;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import com.bali.core.catalog.domain.UtilityCustomer;
 import com.bali.core.order.domain.UtilityOrderItem;
 import com.bali.core.order.service.BaliOrderItemService;
 import com.bali.core.order.service.call.AddUtilityToCartItem;
@@ -53,7 +56,12 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 			return context;
 		}
 		AddUtilityToCartItem utilityOrderItemRequest = (AddUtilityToCartItem)request.getItemRequest();
+		Money moneyAmount = convertAmount(utilityOrderItemRequest);
 		Order order = request.getOrder();
+		final Double saldo = fetchSaldo(order.getCustomer());
+		if(moneyAmount.greaterThan(BigDecimal.valueOf(saldo))){
+			logger.error(String.format("Payment %s exeeds available saldo %s", moneyAmount.getAmount(), saldo));
+		}
 		Sku sku = null;
 		if (utilityOrderItemRequest.getSkuId() != null) {
 			sku = this.catalogService.findSkuById(utilityOrderItemRequest.getSkuId());
@@ -73,7 +81,6 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 			category = product.getDefaultCategory();
 		}
 
-		Money moneyAmount = convertAmount(utilityOrderItemRequest);
 		OrderItemRequest orderItemRequest = new OrderItemRequest();
 		orderItemRequest.setCategory(category);
 		orderItemRequest.setProduct(product);
@@ -83,6 +90,9 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 		orderItemRequest.setOrder(order);
 		UtilityOrderItem utilityOrderItem = this.orderItemService.createUtilityOrderItem(orderItemRequest);
 		utilityOrderItem.setPrice(moneyAmount);
+		if( !chargeCustomerSaldo(moneyAmount, order)){
+			return context;
+		}
 		utilityOrderItem.setAccountnumber(utilityOrderItemRequest.getAccountnumber());
 		utilityOrderItem.setAddress(utilityOrderItemRequest.getAddress());
 		utilityOrderItem.setSku(product.getDefaultSku());
@@ -95,6 +105,31 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 		}
 
 		return context;
+	}
+
+	private boolean chargeCustomerSaldo(Money moneyAmount, Order order) {
+		UtilityCustomer customer = fetchCustomer(order);
+		BigDecimal restSaldo = BigDecimal.valueOf(customer.getSaldo()).subtract(moneyAmount.getAmount());
+		if( restSaldo.compareTo(BigDecimal.ZERO) < 0){
+			logger.error(String.format("Cannot proceed with payment of %s because exeeds saldo %s", moneyAmount.getAmount(), customer.getSaldo()));
+			return false;
+		}
+		customer.setSaldo(restSaldo.doubleValue());
+		return true;
+	}
+	
+	private UtilityCustomer fetchCustomer(Order order){
+		if (!(order.getCustomer() instanceof UtilityCustomer)){
+			return null;
+		}
+		return (UtilityCustomer)order.getCustomer();
+	}
+	
+	private Double fetchSaldo(Customer customer) {
+		if (!(customer instanceof UtilityCustomer) || ((UtilityCustomer)customer).getSaldo() == null){
+			return null;
+		}
+		return ((UtilityCustomer)customer).getSaldo();
 	}
 
 	private Sku addCustomSku(Product product, Money inputPriceMoney) {

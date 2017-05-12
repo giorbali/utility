@@ -8,6 +8,7 @@
 		<non-jta-data-source>jdbc/web</non-jta-data-source>
 		<class>com.bali.core.order.domain.UtilityOrderItemImpl</class>
 		<class>com.bali.core.catalog.domain.UtilityCustomerImpl</class>
+		<class>com.bali.core.promo.CouponImpl</class>
 		<exclude-unlisted-classes />
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />

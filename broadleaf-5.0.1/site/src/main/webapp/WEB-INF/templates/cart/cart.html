@@ -12,7 +12,6 @@
             <div id="orderDiscounts" th:unless="${cart.orderAdjustmentsValue.zero}">
                 <span th:utext="#{cart.orderDiscount}">Order Discount</span>: <span blc:price="${cart.orderAdjustmentsValue}" />
             </div>
-            <p><span th:utext="#{cart.subtotalDisclaimer}">Subtotal does not yet include applicable tax or shipping and handling charges</span>.</p>
             <div id="checkout">
                 <a th:href="@{/checkout}" target="_top" class="big-button red-button">
                     <span th:utext="#{cart.checkout}">Checkout</span>

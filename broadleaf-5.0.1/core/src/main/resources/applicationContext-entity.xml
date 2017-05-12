@@ -22,4 +22,5 @@
         <!-- For example, if you have a custom class that extends CustomerImpl, you would note that here -->
         <bean id="com.bali.core.order.domain.UtilityOrderItem" class="com.bali.core.order.domain.UtilityOrderItemImpl" scope="prototype"/>
         <bean id="org.broadleafcommerce.profile.core.domain.Customer" class="com.bali.core.catalog.domain.UtilityCustomerImpl" scope="prototype"/>
+        <!-- <bean id="com.bali.core.promo.Coupon" class="com.bali.core.promo.CouponImpl" scope="prototype"/> -->
 </beans>

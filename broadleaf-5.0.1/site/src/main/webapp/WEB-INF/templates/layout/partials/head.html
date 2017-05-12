@@ -1,14 +1,14 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-    <title th:unless="${pageTitle == 'TEMPLATE'}" th:utext="${#strings.isEmpty(pageTitle) ? 'Broadleaf Demo - Heat Clinic' : pageTitle}"></title>
+    <title th:unless="${pageTitle == 'TEMPLATE'}" th:utext="${#strings.isEmpty(pageTitle) ? 'Utility Payments' : pageTitle}"></title>
     
     <title th:if="${pageTitle == 'TEMPLATE'}" th:remove="tag">
         <title th:inline="text" th:include="${templateName} :: title" />
     </title>
     
-    <meta name="description" content="Broadleaf Demo Store" />
-    <meta name="author" content="Broadleaf Commerce" />
+    <meta name="description" content="Utility Payments" />
+    <meta name="author" content="Utility Payments" />
 
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />   
     <meta name="viewport" content="width=device-width" />
