@@ -1,0 +1,13 @@
+<!-- <div th:if="*{featuredProduct}" class="new_badge">New!</div> -->
+
+<div class="image">
+    <a th:href="@{*{url}}">
+    <img th:if="*{media['primary']}" blc:src="@{*{media['primary'].url} + '?browse'}" th:alt="*{name}" />
+    </a>
+</div>
+
+<!-- <div class="content2">
+    <div class="title" th:utext="*{name}"></div>
+    <p th:utext="*{longDescription}"></p>
+</div> -->
+

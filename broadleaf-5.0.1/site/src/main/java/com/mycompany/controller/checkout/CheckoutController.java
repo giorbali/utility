@@ -43,11 +43,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.bali.core.promo.Coupon;
+import com.bali.core.promo.CouponDao;
+
+import java.util.List;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class CheckoutController extends BroadleafCheckoutController {
+	
+	@Resource(name = "couponDao")
+	private CouponDao couponDao;
 
     @RequestMapping("/checkout")
     public String checkout(HttpServletRequest request, HttpServletResponse response, Model model,
@@ -57,6 +66,8 @@ public class CheckoutController extends BroadleafCheckoutController {
             @ModelAttribute("giftCardInfoForm") GiftCardInfoForm giftCardInfoForm,
             @ModelAttribute("customerCreditInfoForm") CustomerCreditInfoForm customerCreditInfoForm,
             RedirectAttributes redirectAttributes) {
+    	List<Coupon> coupons = couponDao.readAllCoupons();
+    	model.addAttribute("coupons", coupons);
         return super.checkout(request, response, model, redirectAttributes);
     }
 

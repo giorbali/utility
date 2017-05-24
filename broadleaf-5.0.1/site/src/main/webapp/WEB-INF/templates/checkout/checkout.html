@@ -26,6 +26,10 @@
                 </p>
 
                 <div class="clearfix"></div>
+                
+                <ul id="coupons" class="group">
+                    <li th:each="coupon : ${coupons}" th:object="${coupon}" th:text="*{name}" class="product_container"></li>
+                 </ul>
 
                 <div th:replace="checkout/partials/orderSummary-bali :: order-summary"></div>
 
