@@ -95,6 +95,15 @@ textarea {
     padding: 2%;
 }
 
+.coupon {
+	border-style: dashed;
+	width: 200px;
+	height: 100px;
+    margin: 5px;
+    float: left;
+    display: inline;
+}
+
 .form_row {
     width: 100%;
     float: left;

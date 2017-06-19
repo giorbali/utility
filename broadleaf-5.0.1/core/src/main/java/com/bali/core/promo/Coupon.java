@@ -16,5 +16,9 @@ public interface Coupon extends Serializable {
 
 	public abstract void setCount(Long paramLong);
 	
+	public abstract Long getAmount();
+	
+	public abstract void setAmount(Long paramLong);
+	
 
 }

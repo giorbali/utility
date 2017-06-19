@@ -36,6 +36,10 @@ public class CouponImpl implements Coupon {
 	@Column(name = "COUPON_COUNT")
 	@AdminPresentation(friendlyName = "CouponImpl_Coupon_Count", group = "General", order = 6000, prominent = true, gridOrder = 3000)
 	private Long count;
+	
+	@Column(name = "COUPON_AMOUNT")
+	@AdminPresentation(friendlyName = "CouponImpl_Coupon_Amount", group = "General", order = 6000, prominent = true, gridOrder = 3000)
+	private Long amount;
 
 	@Override
 	public Long getId() {
@@ -65,6 +69,18 @@ public class CouponImpl implements Coupon {
 	@Override
 	public void setCount(Long count) {
 		this.count = count;
+	}
+
+	@Override
+	public Long getAmount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setAmount(Long paramLong) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
