@@ -1,14 +1,21 @@
-<div >
-<blc:form th:object="${couponCheckoutForm}" th:action="@{/checkout/saveCoupons}" method="post" id="order_coupon" novalidate="novalidate">
-        
-				<div class="coupon submit-row">
-				<p >
-                    <span th:utext="${coupon.name}" />
-                </p>
-				<p >
-                    <span th:utext="${coupon.amount}" />
-                </p>
-                    <input class="small red" type="submit" value="pick" />
-                </div>
-            </blc:form>
+<div>
+	<blc:form th:object="${couponCheckoutForm}"
+		th:action="@{/checkout/saveCoupons}" method="post" id="order_coupon"
+		novalidate="novalidate">
+
+		<div class="coupon submit-row">
+			<p id="coupon_name" align="center">
+				<span id="coupon_name_txt" th:utext="${coupon.name}"
+					style="font-size: 20pt; color: red;" />
+			</p>
+			<p id="coupon_amount" align="center">
+				<span id="coupon_amount_txt"
+					th:text="${coupon.amount}?:'no amount specified'"
+					style="font-size: 20pt; text-align: center;" />
+			</p>
+			<div id="pick_btn" align="right">
+				<input class="small red" type="submit" value="pick" />
+			</div>
+		</div>
+</blc:form>
 </div>

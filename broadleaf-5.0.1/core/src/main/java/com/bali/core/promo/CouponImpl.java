@@ -73,14 +73,12 @@ public class CouponImpl implements Coupon {
 
 	@Override
 	public Long getAmount() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.amount;
 	}
 
 	@Override
 	public void setAmount(Long paramLong) {
-		// TODO Auto-generated method stub
-		
+		this.amount = paramLong;
 	}
 
 }
