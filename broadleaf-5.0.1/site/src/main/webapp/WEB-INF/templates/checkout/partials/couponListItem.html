@@ -1,9 +1,10 @@
 <div>
-	<blc:form th:object="${couponCheckoutForm}"
-		th:action="@{/checkout/saveCoupons}" method="post" id="order_coupon"
+	<blc:form th:object="${couponPickForm}"
+		th:action="@{/checkout/pickCoupon}" method="post" id="order_coupon"
 		novalidate="novalidate">
 
 		<div class="coupon submit-row">
+		<input type="hidden" th:id="couponId" th:name="couponId" th:value="${coupon.id}"/>
 			<p id="coupon_name" align="center">
 				<span id="coupon_name_txt" th:utext="${coupon.name}"
 					style="font-size: 20pt; color: red;" />
@@ -11,10 +12,10 @@
 			<p id="coupon_amount" align="center">
 				<span id="coupon_amount_txt"
 					th:text="${coupon.amount}?:'no amount specified'"
-					style="font-size: 20pt; text-align: center;" />
+					style="font-size: 20pt;" />
 			</p>
 			<div id="pick_btn" align="right">
-				<input class="small red" type="submit" value="pick" />
+				<input class="small red" type="submit" value="pick"  />
 			</div>
 		</div>
 </blc:form>

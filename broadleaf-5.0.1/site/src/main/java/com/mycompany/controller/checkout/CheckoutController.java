@@ -16,15 +16,22 @@
 
 package com.mycompany.controller.checkout;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.broadleafcommerce.common.exception.ServiceException;
 import org.broadleafcommerce.common.payment.PaymentType;
 import org.broadleafcommerce.common.vendor.service.exception.PaymentException;
+import org.broadleafcommerce.common.web.BroadleafRequestContext;
+import org.broadleafcommerce.core.order.domain.Order;
 import org.broadleafcommerce.core.pricing.service.exception.PricingException;
 import org.broadleafcommerce.core.web.checkout.model.BillingInfoForm;
 import org.broadleafcommerce.core.web.checkout.model.CustomerCreditInfoForm;
@@ -32,6 +39,8 @@ import org.broadleafcommerce.core.web.checkout.model.GiftCardInfoForm;
 import org.broadleafcommerce.core.web.checkout.model.OrderInfoForm;
 import org.broadleafcommerce.core.web.checkout.model.ShippingInfoForm;
 import org.broadleafcommerce.core.web.controller.checkout.BroadleafCheckoutController;
+import org.broadleafcommerce.core.web.order.CartState;
+import org.broadleafcommerce.profile.core.domain.Customer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,17 +49,27 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.bali.core.catalog.domain.UtilityCustomer;
 import com.bali.core.promo.Coupon;
 import com.bali.core.promo.CouponDao;
-import com.mycompany.controller.coupon.CouponCheckoutForm;
+import com.bali.core.promo.CouponOrder;
+import com.bali.core.promo.CouponOrderDao;
+import com.bali.core.promo.CouponOrderImpl;
+import com.google.common.collect.Lists;
+import com.mycompany.controller.coupon.CouponPickForm;
 
 @Controller
 public class CheckoutController extends BroadleafCheckoutController {
 	
+	private static final Log logger = LogFactory.getLog(CheckoutController.class);
+	
 	@Resource(name = "couponDao")
 	private CouponDao couponDao;
+	@Resource(name = "couponOrderDao")
+	private CouponOrderDao couponOrderDao;
 
     @RequestMapping("/checkout")
     public String checkout(HttpServletRequest request, HttpServletResponse response, Model model,
@@ -60,12 +79,24 @@ public class CheckoutController extends BroadleafCheckoutController {
             @ModelAttribute("giftCardInfoForm") GiftCardInfoForm giftCardInfoForm,
             @ModelAttribute("customerCreditInfoForm") CustomerCreditInfoForm customerCreditInfoForm,
             RedirectAttributes redirectAttributes) {
+    	model.addAttribute("saldo", fetchCustomerSaldo());
     	List<Coupon> coupons = couponDao.readAllCoupons();
     	model.addAttribute("coupons", coupons);
+    	List<Coupon> pickedCoupons = fetchPickedCoupons();
+    	long pickedCouponAmount = pickedCoupons.stream().mapToLong(c -> c.getAmount()).sum();
+    	model.addAttribute("pickedCouponAmount", pickedCouponAmount);
         return super.checkout(request, response, model, redirectAttributes);
     }
 
-    @RequestMapping(value = "/checkout/savedetails", method = RequestMethod.POST)
+    private double fetchCustomerSaldo() {
+    	Customer customer = CartState.getCart().getCustomer();
+    	if(customer instanceof UtilityCustomer){
+    		return ((UtilityCustomer)customer).getSaldo();
+    	}
+		return 0d;
+	}
+
+	@RequestMapping(value = "/checkout/savedetails", method = RequestMethod.POST)
     public String saveGlobalOrderDetails(HttpServletRequest request, Model model,
             @ModelAttribute("shippingInfoForm") ShippingInfoForm shippingForm,
             @ModelAttribute("billingInfoForm") BillingInfoForm billingForm,
@@ -74,20 +105,74 @@ public class CheckoutController extends BroadleafCheckoutController {
         return super.saveGlobalOrderDetails(request, model, orderInfoForm, result);
     }
     
-    @RequestMapping(value = "/checkout/saveCoupons", method = RequestMethod.POST)
-    public String saveCoupons(HttpServletRequest request, Model model,
-    		@ModelAttribute("couponCheckoutForm") CouponCheckoutForm couponCheckoutForm,
+    @RequestMapping(value = "/checkout/pickCoupon", method = RequestMethod.POST)
+    public String pickCoupon(HttpServletRequest request, Model model,
+    		@ModelAttribute("couponPickForm") CouponPickForm couponPickForm,
     		@ModelAttribute("shippingInfoForm") ShippingInfoForm shippingForm,
     		@ModelAttribute("billingInfoForm") BillingInfoForm billingForm,
     		@ModelAttribute("giftCardInfoForm") GiftCardInfoForm giftCardInfoForm,
     		@ModelAttribute("orderInfoForm") OrderInfoForm orderInfoForm, BindingResult result) throws ServiceException {
-    	if(couponCheckoutForm != null){
-    		// TODO
+    	if(couponPickForm != null){
+    		Coupon coupon = couponDao.fetchById(couponPickForm.getCouponId());
+    		List<Coupon> pickedCoupons = fetchPickedCoupons();
+    		pickedCoupons.add(coupon);
+            storePickedCoupons(pickedCoupons);
     	}
-    	return super.saveGlobalOrderDetails(request, model, orderInfoForm, result);
+    	return "redirect:/checkout";
+    }
+    
+    @RequestMapping(value = "/checkout/clearCouponSelection", method = RequestMethod.POST)
+    public String saveCoupons(HttpServletRequest request, Model model) throws ServiceException {
+    	storePickedCoupons(Lists.newArrayList());
+    	return "redirect:/checkout";
     }
 
-    @RequestMapping(value = "/checkout/complete", method = RequestMethod.POST)
+	private void storePickedCoupons(List<Coupon> pickedCoupons) {
+		WebRequest webRequest = BroadleafRequestContext.getBroadleafRequestContext().getWebRequest();
+		webRequest.setAttribute("pickedCoupons", pickedCoupons, WebRequest.SCOPE_SESSION);
+	}
+
+	private List<Coupon> fetchPickedCoupons() {
+		WebRequest webRequest = BroadleafRequestContext.getBroadleafRequestContext().getWebRequest();
+		Object pickedCouponAttribute = webRequest.getAttribute("pickedCoupons", WebRequest.SCOPE_SESSION);
+		if (pickedCouponAttribute instanceof List){
+			return (List<Coupon>)pickedCouponAttribute;
+		} else {
+			return Lists.newArrayList();
+		}
+	}
+
+    private void addCouponToCart(Long couponId, Order cart) {
+    	if(couponId == null || cart == null){
+    		logger.error("couponId or cart cannot be null");
+    		return;
+    	}
+    	Coupon coupon = couponDao.fetchById(couponId);
+    	if(coupon == null){
+    		return;
+    	}
+    	List<CouponOrder> pickedCoupons = couponOrderDao.findAllByOrder(cart);
+    	if(CollectionUtils.isEmpty(pickedCoupons)){
+    		saveCouponOrder(coupon, cart);
+    	}
+    	List<Coupon> coupons = pickedCoupons.stream().map(item -> item.getCoupon()).collect(Collectors.toList());
+    	Long couponAmountSum = coupons.stream().mapToLong(c -> c.getAmount()).sum();
+    	BigDecimal rest = cart.getTotal().getAmount().subtract(BigDecimal.valueOf(couponAmountSum));
+    	if(rest.compareTo(BigDecimal.valueOf(coupon.getAmount())) == -1){
+    		logger.info(String.format("You can pick coupons by less then %s amount", rest.toString()));
+    		return;
+    	}
+    	saveCouponOrder(coupon, cart);
+	}
+
+	private void saveCouponOrder(Coupon coupon, Order cart) {
+		CouponOrder couponOrder = new CouponOrderImpl();
+		couponOrder.setCoupon(coupon);
+		couponOrder.setOrder(cart);
+		couponOrderDao.save(couponOrder);
+	}
+
+	@RequestMapping(value = "/checkout/complete", method = RequestMethod.POST)
     public String processCompleteCheckoutOrderFinalized(RedirectAttributes redirectAttributes) throws PaymentException {
     	baseConfirmationRedirect = "redirect:/confirmation2";
         return super.processCompleteCheckoutOrderFinalized(redirectAttributes);

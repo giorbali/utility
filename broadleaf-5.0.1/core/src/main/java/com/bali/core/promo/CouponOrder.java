@@ -6,16 +6,20 @@ import org.broadleafcommerce.core.order.domain.Order;
 
 public interface CouponOrder extends Serializable {
 	
-	public abstract Long getId();
+	Long getId();
 
-	public abstract void setId(Long paramLong);
+	void setId(Long paramLong);
 	
-	public abstract Coupon getCoupon();
+	Coupon getCoupon();
 
-	public abstract void setCoupon(Coupon coupon);
+	void setCoupon(Coupon coupon);
 	
-	public abstract Order getOrder();
+	Order getOrder();
 	
-	public abstract void setOrder(Order order);
+	void setOrder(Order order);
+	
+	Long getCount();
+	
+	void setCount(Long count);
 
 }

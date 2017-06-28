@@ -19,6 +19,7 @@
 	<persistence-unit name="blSecurePU" transaction-type="RESOURCE_LOCAL">
 		<non-jta-data-source>jdbc/webSecure</non-jta-data-source>
 		<exclude-unlisted-classes />
+		
 	</persistence-unit>
 
 	<persistence-unit name="blCMSStorage"
@@ -26,4 +27,5 @@
 		<non-jta-data-source>jdbc/cmsStorage</non-jta-data-source>
 		<exclude-unlisted-classes />
 	</persistence-unit>
+	
 </persistence>

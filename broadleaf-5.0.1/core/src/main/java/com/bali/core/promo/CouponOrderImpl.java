@@ -45,6 +45,10 @@ public class CouponOrderImpl implements CouponOrder {
 	@AdminPresentation(friendlyName = "CouponOrderImpl_Order", group = "General", order = 2000)
 	@AdminPresentationToOneLookup
 	private Order order;
+	
+	@Column(name = "COUPON_COUNT")
+	@AdminPresentation(friendlyName = "CouponOrderImpl_Coupon_Count", group = "General", order = 6000)
+	private Long count;
 
 	@Override
 	public Long getId() {
@@ -74,6 +78,16 @@ public class CouponOrderImpl implements CouponOrder {
 	@Override
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	@Override
+	public Long getCount() {
+		return this.count;
+	}
+
+	@Override
+	public void setCount(Long count) {
+		this.count = count;
 	}
 
 }
