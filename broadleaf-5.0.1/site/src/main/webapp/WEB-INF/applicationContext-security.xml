@@ -43,7 +43,7 @@
         <sec:intercept-url pattern="/checkout/**" requires-channel="https" />
         <sec:intercept-url pattern="/sample-checkout/**" requires-channel="https" />
         <sec:intercept-url pattern="/sample-giftcard/**" requires-channel="https" />
-        <sec:intercept-url pattern="/confirmation/**" requires-channel="https" />
+        <sec:intercept-url pattern="/confirmation2/**" requires-channel="https" />
         
         <!-- Since the cart page is viewing as a modal, we want to allow it on any page -->
         <sec:intercept-url pattern="/cart/**" requires-channel="any" />

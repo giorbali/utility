@@ -30,9 +30,10 @@ import javax.servlet.http.HttpServletResponse;
 public class OrderConfirmationController extends BroadleafOrderConfirmationController {
     
     @Override
-    @RequestMapping(value = "/confirmation/{orderNumber}", method = RequestMethod.GET)
+    @RequestMapping(value = "/confirmation2/{orderNumber}", method = RequestMethod.GET)
     public String displayOrderConfirmationByOrderNumber(@PathVariable("orderNumber") String orderNumber, Model model,
             HttpServletRequest request, HttpServletResponse response) {
+    	orderConfirmationView = "checkout/confirmation2";
         return super.displayOrderConfirmationByOrderNumber(orderNumber, model, request, response);
     }
 

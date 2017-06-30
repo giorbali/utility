@@ -26,10 +26,13 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.bali.core.catalog.domain.UtilityCustomer;
 import com.bali.core.order.domain.UtilityOrderItem;
 import com.bali.core.order.service.BaliOrderItemService;
+import com.bali.core.order.service.SaldoService;
 import com.bali.core.order.service.call.AddUtilityToCartItem;
+import com.bali.core.promo.CustomerSaldo;
+import com.bali.core.promo.CustomerSaldoDao;
+import com.bali.core.promo.CustomerSaldoImpl;
 
 public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<CartOperationRequest>> {
 	
@@ -43,6 +46,10 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 	protected CatalogService catalogService;
 	@Resource(name = "blGenericEntityDao")
 	protected GenericEntityDao genericEntityDao;
+	@Resource(name = "customerSaldoDao")
+	protected CustomerSaldoDao customerSaldoDao;
+	@Resource(name = "saldoService")
+	protected SaldoService saldoService;
 	@Autowired
 	private ApplicationContext appContext;
 
@@ -108,41 +115,24 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 	}
 
 	private boolean chargeCustomerSaldo(Money moneyAmount, Order order) {
-		UtilityCustomer customer = fetchCustomer(order);
-		BigDecimal restSaldo = BigDecimal.valueOf(customer.getSaldo()).subtract(moneyAmount.getAmount());
-		if( restSaldo.compareTo(BigDecimal.ZERO) < 0){
-			logger.error(String.format("Cannot proceed with payment of %s because exeeds saldo %s", moneyAmount.getAmount(), customer.getSaldo()));
+		Customer customer = order.getCustomer();
+		Double saldo = fetchSaldo(customer);
+		if(BigDecimal.valueOf(saldo).compareTo(moneyAmount.getAmount()) == -1) {
+			logger.error(String.format("Cannot proceed with payment of %s because exeeds saldo %s", moneyAmount.getAmount(), saldo));
 			return false;
 		}
-		customer.setSaldo(restSaldo.doubleValue());
+		CustomerSaldo customerSaldo = new CustomerSaldoImpl();
+		customerSaldo.setCustomer(customer);
+		customerSaldo.setType("minus");
+		customerSaldo.setDate(DateTime.now().toDate());
+		customerSaldo.setDescription(String.format("Charge amount:%s by Order:%s", moneyAmount.getAmount(), order.getId()));
+		customerSaldo.setSaldo(moneyAmount.getAmount().doubleValue());
+		saldoService.saveSaldo(customerSaldo);
 		return true;
 	}
 	
-	private UtilityCustomer fetchCustomer(Order order){
-		if (!(order.getCustomer() instanceof UtilityCustomer)){
-			return null;
-		}
-		return (UtilityCustomer)order.getCustomer();
-	}
-	
 	private Double fetchSaldo(Customer customer) {
-		if (!(customer instanceof UtilityCustomer) || ((UtilityCustomer)customer).getSaldo() == null){
-			return null;
-		}
-		return ((UtilityCustomer)customer).getSaldo();
-	}
-
-	private Sku addCustomSku(Product product, Money inputPriceMoney) {
-		Sku sku;
-		sku = this.catalogService.createSku();
-		sku.setProduct(product);
-		sku.setDefaultProduct(product);
-		sku.setActiveStartDate(DateTime.now().toDate());
-		sku.setActiveEndDate(DateTime.now().plusDays(1).toDate());
-		sku.setSalePrice(inputPriceMoney);
-		this.genericEntityDao.persist(sku);
-		System.out.println(String.format("populate sku(id=%s) ", sku.getId()));
-		return sku;
+		return saldoService.fetchActualSaldoByCustomer(customer);
 	}
 
 	private Money convertAmount(AddUtilityToCartItem addToCartItem) {

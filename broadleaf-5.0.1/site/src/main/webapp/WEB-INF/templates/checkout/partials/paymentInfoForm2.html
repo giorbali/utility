@@ -1,0 +1,28 @@
+<div th:fragment="payment-info-form">
+
+	<div class="cart_title">
+	</div>
+
+	<div class="clearfix"></div>
+
+	<div class="checkout_warning"
+		th:if="${'INACTIVE' == sectionDTO.state.type}">
+		<span th:utext="${sectionDTO.helpMessage}"></span>
+	</div>
+
+	<div th:if="${'FORM' == sectionDTO.state.type}" id="payment_info_form">
+
+		<div>
+			<blc:form th:action="@{/checkout/cod/complete}" method="POST"
+				id="complete_checkout" novalidate="novalidate">
+				<input type="submit" class="medium red"
+					th:value="#{cart.completOrder}" />
+			</blc:form>
+		</div>
+
+
+		<div class="clearfix"></div>
+
+	</div>
+
+</div>

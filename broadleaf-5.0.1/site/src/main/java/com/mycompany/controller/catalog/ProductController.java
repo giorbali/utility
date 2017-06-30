@@ -17,9 +17,14 @@
 package com.mycompany.controller.catalog;
 
 import org.broadleafcommerce.core.web.controller.catalog.BroadleafProductController;
+import org.broadleafcommerce.profile.core.domain.Customer;
+import org.broadleafcommerce.profile.web.core.CustomerState;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bali.core.order.service.SaldoService;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,10 +34,20 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller("blProductController")
 public class ProductController extends BroadleafProductController {
+	
+	@Resource(name = "saldoService")
+	protected SaldoService saldoService;
     
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return super.handleRequest(request, response);
+    	ModelAndView model = super.handleRequest(request, response);
+        Customer customer = CustomerState.getCustomer(request);
+        if(null == customer){
+        	model.addObject("saldo", 0d);
+        } else {
+        	model.addObject("saldo", saldoService.fetchActualSaldoByCustomer(customer));
+        }
+        return model;
     }
 
 }

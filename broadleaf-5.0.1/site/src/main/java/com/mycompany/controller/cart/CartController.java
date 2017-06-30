@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.broadleafcommerce.core.catalog.domain.Product;
 import org.broadleafcommerce.core.catalog.service.CatalogService;
 import org.broadleafcommerce.core.inventory.service.InventoryUnavailableException;
 import org.broadleafcommerce.core.order.service.call.AddToCartItem;
@@ -40,7 +40,6 @@ import org.broadleafcommerce.core.web.controller.cart.BroadleafCartController;
 import org.broadleafcommerce.core.web.order.CartState;
 import org.broadleafcommerce.core.workflow.SequenceProcessor;
 import org.broadleafcommerce.profile.core.domain.Customer;
-import org.broadleafcommerce.profile.core.service.CustomerService;
 import org.broadleafcommerce.profile.web.core.CustomerState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +51,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bali.core.catalog.domain.UtilityCustomer;
+import com.bali.core.order.service.SaldoService;
 import com.bali.core.order.service.call.AddUtilityToCartItem;
 
 @Controller
@@ -67,14 +66,19 @@ public class CartController extends BroadleafCartController {
     private CatalogService catalogService;
     @Autowired
     private SequenceProcessor blAddItemWorkflow;
-    @Autowired
-    private CustomerService customerService;
+    @Resource(name = "saldoService")
+	protected SaldoService saldoService;
     
     @Override
     @RequestMapping("")
     public String cart(HttpServletRequest request, HttpServletResponse response, Model model) throws PricingException {
+    	Customer customer = CustomerState.getCustomer(request);
+        if(null == customer){
+        	model.addAttribute("saldo", 0d);
+        } else {
+        	model.addAttribute("saldo", saldoService.fetchActualSaldoByCustomer(customer));
+        }
         String returnPath = super.cart(request, response, model);
-        Customer createCustomer = customerService.createCustomer();
         if (isAjaxRequest(request)) {
             returnPath += " :: ajax";
         }
@@ -82,7 +86,7 @@ public class CartController extends BroadleafCartController {
     }
     
     /*
-     * The Heat Clinic does not show the cart when a product is added. Instead, when the product is added via an AJAX
+     * The Utility Application does not show the cart when a product is added. Instead, when the product is added via an AJAX
      * POST that requests JSON, we only need to return a few attributes to update the state of the page. The most
      * efficient way to do this is to call the regular add controller method, but instead return a map that contains
      * the necessary attributes. By using the @ResposeBody tag, Spring will automatically use Jackson to convert the
@@ -129,7 +133,7 @@ public class CartController extends BroadleafCartController {
     }
     
     /*
-     * The Heat Clinic does not show the cart when a product is added. Instead, when the product is added via an AJAX
+     * The Utility Application does not show the cart when a product is added. Instead, when the product is added via an AJAX
      * POST that requests JSON, we only need to return a few attributes to update the state of the page. The most
      * efficient way to do this is to call the regular add controller method, but instead return a map that contains
      * the necessary attributes. By using the @ResposeBody tag, Spring will automatically use Jackson to convert the
@@ -180,7 +184,7 @@ public class CartController extends BroadleafCartController {
     }
     
     /*
-     * The Heat Clinic does not support adding products with required product options from a category browse page
+     * The Utility Application does not support adding products with required product options from a category browse page
      * when JavaScript is disabled. When this occurs, we will redirect the user to the full product details page 
      * for the given product so that the required options may be chosen.
      */
@@ -188,13 +192,9 @@ public class CartController extends BroadleafCartController {
     public String add(HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes redirectAttributes,
             @ModelAttribute("addToCartItem") AddUtilityToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
         try {
-        	UtilityCustomer customer = (UtilityCustomer)CustomerState.getCustomer(request);
-        	if(customer.getSaldo() == null || customer.getSaldo() <= 0d ){
-        		customer.setSaldo(100d);
-        	}
-            return super.add(request, response, model, addToCartItem);
+        	return super.add(request, response, model, addToCartItem);
         } catch (AddToCartException e) {
-            Product product = catalogService.findProductById(addToCartItem.getProductId());
+//            Product product = catalogService.findProductById(addToCartItem.getProductId());
 //            return "redirect:" + product.getUrl();
             return "redirect:/";
         }

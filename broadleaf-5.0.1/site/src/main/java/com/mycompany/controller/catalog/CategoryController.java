@@ -16,12 +16,17 @@
 
 package com.mycompany.controller.catalog;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.broadleafcommerce.core.web.controller.catalog.BroadleafCategoryController;
+import org.broadleafcommerce.profile.core.domain.Customer;
+import org.broadleafcommerce.profile.web.core.CustomerState;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.bali.core.order.service.SaldoService;
 
 /**
  * This class works in combination with the CategoryHandlerMapping which finds a category based upon
@@ -29,10 +34,20 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller("blCategoryController")
 public class CategoryController extends BroadleafCategoryController {
+	
+	@Resource(name = "saldoService")
+	protected SaldoService saldoService;
     
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return super.handleRequest(request, response);
+        ModelAndView model = super.handleRequest(request, response);
+        Customer customer = CustomerState.getCustomer(request);
+        if(null == customer){
+        	model.addObject("saldo", 0d);
+        } else {
+        	model.addObject("saldo", saldoService.fetchActualSaldoByCustomer(customer));
+        }
+        return model;
     }
 
 }
