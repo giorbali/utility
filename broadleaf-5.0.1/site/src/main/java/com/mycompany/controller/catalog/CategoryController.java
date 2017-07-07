@@ -42,11 +42,9 @@ public class CategoryController extends BroadleafCategoryController {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView model = super.handleRequest(request, response);
         Customer customer = CustomerState.getCustomer(request);
-        if(null == customer){
-        	model.addObject("saldo", 0d);
-        } else {
+        if(null != customer && !customer.isAnonymous()){
         	model.addObject("saldo", saldoService.fetchActualSaldoByCustomer(customer));
-        }
+        } 
         return model;
     }
 

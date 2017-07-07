@@ -1,0 +1,13 @@
+<th:block layout:decorator="layout/accountLayout" layout:fragment="content">
+    <div>     
+    
+        <div th:if="${!#lists.isEmpty(customerTransactions)}">
+            <table th:substituteby="account/partials/customerSaldosTable"></table>
+        </div>
+        
+        <div th:unless="${!#lists.isEmpty(customerTransactions)}">
+            <h3>You do not have any saldo history</h3>
+        </div>
+        
+    </div>
+</th:block>

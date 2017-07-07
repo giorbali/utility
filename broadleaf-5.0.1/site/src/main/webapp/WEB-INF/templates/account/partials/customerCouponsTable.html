@@ -1,0 +1,19 @@
+<table id="customer_coupons">
+    <thead>
+        <tr>
+            <th colspan="2">Name</th>
+            <th>Amount</th>
+            <th>Count</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="customerCoupon : ${customerCoupons}" th:object="${customerCoupon}" th:id="${'customerCoupon_' + customerCoupon.id}">
+            <td  th:text="*{coupon.name}"></td>
+            <td align="center" blc:price="*{coupon.amount}"></td>
+            <td  th:text="*{count}"></td>
+            <td  th:text="*{date}"></td>
+        </tr>
+        
+    </tbody>
+</table>

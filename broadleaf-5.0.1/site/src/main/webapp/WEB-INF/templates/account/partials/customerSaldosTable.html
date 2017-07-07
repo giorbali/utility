@@ -1,0 +1,19 @@
+<table id="customer_saldos">
+    <thead>
+        <tr>
+            <th colspan="2">Discreption</th>
+            <th>Saldo</th>
+            <th>Type</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="saldo : ${customerTransactions}" th:object="${saldo}" th:id="${'saldo_' + saldo.id}">
+            <td  th:text="*{description}"></td>
+            <td align="center" blc:price="*{saldo}"></td>
+            <td  th:text="*{type}"></td>
+            <td  th:text="*{date}"></td>
+        </tr>
+        
+    </tbody>
+</table>

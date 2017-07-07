@@ -743,7 +743,63 @@ li.promotion,  ul.promotion{
 	font-family: 'Georgia', serif;
     font-size: 12px;
 }
+##################
+.coupon-history-overview {
+    padding: 0 0 0 0;
+}
+#coupon-history {
+    padding: 0 0 0 150px;
+    list-style-type: none;
+}
 
+#coupon-history .coupon-info {
+    padding: 0;
+    list-style-type: none;
+}
+#coupon-history .coupon-info-header {
+    padding: 0;
+    list-style-type: none;
+}
+
+#coupon-history > li:nth-child(2n) div.coupon-info-row {
+    background-color: #eae3dd;
+}
+
+#coupon-history > li:first-child {
+    font-weight: bold;
+    padding-bottom: 4px;
+}
+
+#coupon-history > li {
+    border-bottom: 1px solid #C8C3C1;
+    padding: 0;
+}
+
+#coupon-history > li span {
+    display: inline-block;
+}
+
+#coupon-history > li .coupon-name {
+    padding-left: 6px;
+    width: 160px;
+}
+
+#coupon-history > li .coupon-amount {
+    width: 120px;
+}
+
+#coupon-history > li .picked-count {
+    width: 120px;
+}
+
+#coupon-history > li .pick-date {
+    width: 100px;
+}
+
+#coupon-history .coupon-details {
+    display: none;
+}
+######################
 #order-history .order-info-row {
     padding: 8px 0;
 }

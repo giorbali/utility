@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.broadleafcommerce.common.presentation.AdminPresentation;
 import org.broadleafcommerce.common.presentation.AdminPresentationClass;
+import org.broadleafcommerce.common.presentation.AdminPresentationToOneLookup;
+import org.broadleafcommerce.common.presentation.client.SupportedFieldType;
 import org.broadleafcommerce.profile.core.domain.Customer;
 import org.broadleafcommerce.profile.core.domain.CustomerImpl;
 import org.hibernate.annotations.GenericGenerator;
@@ -37,7 +39,8 @@ public class CustomerSaldoImpl implements CustomerSaldo {
 
 	@ManyToOne(targetEntity = CustomerImpl.class, optional=false)
     @JoinColumn(name = "CUSTOMER_ID")
-	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Customer", group = "General", order = 1000, prominent = true)
+	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Customer", group = "General", order = 1000, prominent = true )
+	@AdminPresentationToOneLookup()
 	private Customer customer;
 	
 	@Column(name = "DESCRIPTION")

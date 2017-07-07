@@ -23,11 +23,11 @@ import org.springframework.stereotype.Repository;
 @Repository("couponOrderDao")
 @Scope(SCOPE_PROTOTYPE)
 public class CouponOrderDaoImpl implements CouponOrderDao {
-	
+
 	private static final Log logger = LogFactory.getLog(CouponOrderDaoImpl.class);
-	
-	@PersistenceContext(unitName="blPU")
-    protected EntityManager em;
+
+	@PersistenceContext(unitName = "blPU")
+	protected EntityManager em;
 
 	@Override
 	public List<CouponOrder> readAllCoupons() {
@@ -36,13 +36,13 @@ public class CouponOrderDaoImpl implements CouponOrderDao {
 		Root<CouponOrder> couponOrder = criteria.from(CouponOrder.class);
 		criteria.select(couponOrder);
 		TypedQuery<CouponOrder> query = this.em.createQuery(criteria);
-		
-	    return query.getResultList();
+
+		return query.getResultList();
 	}
 
 	@Override
 	public List<CouponOrder> findAllByOrder(Order order) {
-		if(null == order){
+		if (null == order) {
 			logger.error("Order cannot be null");
 			return Collections.emptyList();
 		}
@@ -54,13 +54,18 @@ public class CouponOrderDaoImpl implements CouponOrderDao {
 		criteriaQuery.select(criteriaRoot);
 		criteriaQuery.where(builder.equal(criteriaRoot.get(couponOrder_.getSingularAttribute("order")), order));
 		TypedQuery<CouponOrder> query = this.em.createQuery(criteriaQuery);
-		
+
 		return query.getResultList();
 	}
 
 	@Override
 	public void save(CouponOrder couponOrder) {
 		em.persist(couponOrder);
+	}
+
+	@Override
+	public void saveAllCouponOrders(List<CouponOrder> couponOrders) {
+		em.persist(couponOrders);
 	}
 
 }

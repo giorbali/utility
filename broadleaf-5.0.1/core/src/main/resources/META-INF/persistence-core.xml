@@ -10,6 +10,7 @@
 		<class>com.bali.core.promo.CouponImpl</class>
 		<class>com.bali.core.promo.CouponOrderImpl</class>
 		<class>com.bali.core.promo.CustomerSaldoImpl</class>
+		<class>com.bali.core.promo.CustomerCouponImpl</class>
 		<exclude-unlisted-classes />
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />

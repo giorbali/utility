@@ -60,7 +60,7 @@
         />
         
         <!-- Provide the logout handler -->
-        <sec:logout delete-cookies="ActiveID" invalidate-session="true" logout-url="/logout"/>
+        <sec:logout delete-cookies="ActiveID" invalidate-session="true" logout-url="/logout" />
         
         <!-- Specify our custom filters -->
         <sec:custom-filter ref="blPreSecurityFilterChain" before="CHANNEL_FILTER"/>

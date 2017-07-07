@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
@@ -68,13 +70,16 @@ public class CustomerSaldoDaoImpl implements CustomerSaldoDao {
 		CriteriaQuery<CustomerSaldo> criteriaQuery = criteriaBuilder.createQuery(CustomerSaldo.class);
 		Root<CustomerSaldoImpl> root = criteriaQuery.from(CustomerSaldoImpl.class);
 		criteriaQuery.select(root);
-		criteriaQuery.where(criteriaBuilder.equal(root.get(customerSaldo_.getSingularAttribute("customer")), customer));
-		criteriaQuery.where(criteriaBuilder.equal(root.get(customerSaldo_.getSingularAttribute("type")), type));
+		//Constructing list of parameters
+	    List<Predicate> predicates = new ArrayList<Predicate>();
+	    predicates.add(criteriaBuilder.equal(root.get(customerSaldo_.getSingularAttribute("customer")), customer));
+	    predicates.add(criteriaBuilder.equal(root.get(customerSaldo_.getSingularAttribute("type")), type));
+		criteriaQuery.where(predicates.toArray(new Predicate[]{}));
 		TypedQuery<CustomerSaldo> query = this.em.createQuery(criteriaQuery);
 
 		List<CustomerSaldo> resultList = query.getResultList();
 		if (CollectionUtils.isEmpty(resultList)) {
-			logger.error(String.format("No Saldo found by Customer(id:%s) and type:%s", customer.getId(), type));
+			logger.info(String.format("No Saldo found by Customer(id:%s) and type:%s", customer.getId(), type));
 			return Collections.emptyList();
 		}
 		return resultList;

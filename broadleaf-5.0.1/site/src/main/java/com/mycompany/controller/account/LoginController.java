@@ -16,6 +16,12 @@
 
 package com.mycompany.controller.account;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.broadleafcommerce.common.exception.ServiceException;
 import org.broadleafcommerce.core.web.controller.account.BroadleafLoginController;
 import org.broadleafcommerce.core.web.controller.account.ResetPasswordForm;
@@ -27,18 +33,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * The controller responsible for all actions involving logging a customer in
  */
 @Controller
 public class LoginController extends BroadleafLoginController {
+	
+	private static final Log logger = LogFactory.getLog(LoginController.class);
     
     @RequestMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
-        return super.login(request, response, model);
+    	HttpSession session = request.getSession();
+    	if(session != null){
+    		logger.info("sessionid = " + session.getId());
+    	}
+        String url = super.login(request, response, model);
+        return url;
     }
     
     @RequestMapping(value="/login/forgotPassword", method=RequestMethod.GET)

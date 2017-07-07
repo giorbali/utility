@@ -9,5 +9,6 @@ public interface CouponOrderDao {
 	List<CouponOrder> readAllCoupons();
 	List<CouponOrder> findAllByOrder(Order order);
 	void save(CouponOrder couponOrder);
+	void saveAllCouponOrders(List<CouponOrder> couponOrders);
 
 }

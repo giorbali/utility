@@ -18,9 +18,7 @@ package com.mycompany.controller.checkout;
 
 import static org.broadleafcommerce.profile.web.core.CustomerState.getCustomer;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +31,6 @@ import org.broadleafcommerce.common.exception.ServiceException;
 import org.broadleafcommerce.common.payment.PaymentType;
 import org.broadleafcommerce.common.vendor.service.exception.PaymentException;
 import org.broadleafcommerce.common.web.BroadleafRequestContext;
-import org.broadleafcommerce.core.order.domain.Order;
 import org.broadleafcommerce.core.pricing.service.exception.PricingException;
 import org.broadleafcommerce.core.web.checkout.model.BillingInfoForm;
 import org.broadleafcommerce.core.web.checkout.model.CustomerCreditInfoForm;
@@ -54,12 +51,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.bali.core.order.service.CouponService;
 import com.bali.core.order.service.SaldoService;
 import com.bali.core.promo.Coupon;
-import com.bali.core.promo.CouponDao;
-import com.bali.core.promo.CouponOrder;
 import com.bali.core.promo.CouponOrderDao;
-import com.bali.core.promo.CouponOrderImpl;
 import com.google.common.collect.Lists;
 import com.mycompany.controller.coupon.CouponPickForm;
 
@@ -68,12 +63,12 @@ public class CheckoutController extends BroadleafCheckoutController {
 
 	private static final Log logger = LogFactory.getLog(CheckoutController.class);
 
-	@Resource(name = "couponDao")
-	private CouponDao couponDao;
 	@Resource(name = "couponOrderDao")
 	private CouponOrderDao couponOrderDao;
 	@Resource(name = "saldoService")
 	private SaldoService saldoService;
+	@Resource(name = "couponService")
+	private CouponService couponService;
 
 	@RequestMapping("/checkout")
 	public String checkout(HttpServletRequest request, HttpServletResponse response, Model model,
@@ -84,7 +79,7 @@ public class CheckoutController extends BroadleafCheckoutController {
 			@ModelAttribute("customerCreditInfoForm") CustomerCreditInfoForm customerCreditInfoForm,
 			RedirectAttributes redirectAttributes) {
 		model.addAttribute("saldo", saldoService.fetchActualSaldoByCustomer(getCustomer()));
-		List<Coupon> coupons = couponDao.readAllCoupons();
+		List<Coupon> coupons = couponService.fetchAllCoupons();
 		model.addAttribute("coupons", coupons);
 		List<Coupon> pickedCoupons = fetchPickedCoupons();
 		long pickedCouponAmount = pickedCoupons.stream().mapToLong(c -> c.getAmount()).sum();
@@ -111,7 +106,7 @@ public class CheckoutController extends BroadleafCheckoutController {
 			@ModelAttribute("orderInfoForm") OrderInfoForm orderInfoForm, BindingResult result)
 			throws ServiceException {
 		if (couponPickForm != null) {
-			Coupon coupon = couponDao.fetchById(couponPickForm.getCouponId());
+			Coupon coupon = couponService.fetchById(couponPickForm.getCouponId());
 			List<Coupon> pickedCoupons = fetchPickedCoupons();
 			if (CollectionUtils.isNotEmpty(pickedCoupons)) {
 				long sumPickedCoupons = pickedCoupons.stream().mapToLong(c -> c.getAmount()).sum();
@@ -148,40 +143,14 @@ public class CheckoutController extends BroadleafCheckoutController {
 		}
 	}
 
-	private void addCouponToCart(Long couponId, Order cart) {
-		if (couponId == null || cart == null) {
-			logger.error("couponId or cart cannot be null");
-			return;
-		}
-		Coupon coupon = couponDao.fetchById(couponId);
-		if (coupon == null) {
-			return;
-		}
-		List<CouponOrder> pickedCoupons = couponOrderDao.findAllByOrder(cart);
-		if (CollectionUtils.isEmpty(pickedCoupons)) {
-			saveCouponOrder(coupon, cart);
-		}
-		List<Coupon> coupons = pickedCoupons.stream().map(item -> item.getCoupon()).collect(Collectors.toList());
-		Long couponAmountSum = coupons.stream().mapToLong(c -> c.getAmount()).sum();
-		BigDecimal rest = cart.getTotal().getAmount().subtract(BigDecimal.valueOf(couponAmountSum));
-		if (rest.compareTo(BigDecimal.valueOf(coupon.getAmount())) == -1) {
-			logger.info(String.format("You can pick coupons by less then %s amount", rest.toString()));
-			return;
-		}
-		saveCouponOrder(coupon, cart);
-	}
-
-	private void saveCouponOrder(Coupon coupon, Order cart) {
-		CouponOrder couponOrder = new CouponOrderImpl();
-		couponOrder.setCoupon(coupon);
-		couponOrder.setOrder(cart);
-		couponOrderDao.save(couponOrder);
-	}
-
 	@RequestMapping(value = "/checkout/complete", method = RequestMethod.POST)
 	public String processCompleteCheckoutOrderFinalized(RedirectAttributes redirectAttributes) throws PaymentException {
 		baseConfirmationRedirect = "redirect:/confirmation2";
-		return super.processCompleteCheckoutOrderFinalized(redirectAttributes);
+		String checkoutOrderFinalized = super.processCompleteCheckoutOrderFinalized(redirectAttributes);
+		// save picked coupons
+		List<Coupon> fetchPickedCoupons = fetchPickedCoupons();
+		couponService.savePickedCoupons(fetchPickedCoupons, CustomerState.getCustomer());
+		return checkoutOrderFinalized;
 	}
 
 	@RequestMapping(value = "/checkout/cod/complete", method = RequestMethod.POST)

@@ -1,0 +1,28 @@
+<th:block layout:decorator="layout/accountLayout"
+	layout:fragment="content">
+	<div class="coupon-history-overview" style="padding-left: 50px;">
+		<ul id="coupon-history" th:unless="${#lists.isEmpty(customerCoupons)}">
+			<li class="coupon-info-header">
+			    <span class="coupon-name">Coupon</span>
+				<span class="coupon-amount">Amount</span> 
+				<span class="picked-count">Count</span>
+				<span class="pick-date">Date</span>
+			</li>
+			<li class="coupon-info" th:each="customerCoupon : ${customerCoupons}"
+				th:object="${customerCoupon}"
+				th:id="${'customerCoupon_' + customerCoupon.id}">
+				<div class="coupon-info-row">
+					<span class="coupon-name" th:text="*{coupon.name}"></span> 
+					<span class="coupon-amount" blc:price="*{coupon.amount}"></span>
+					<span class="picked-count" th:text="*{count}"></span> 
+					<span class="pick-date" th:text="*{date}"></span>
+				</div>
+				<!-- <div class="coupon-details"></div> -->
+			</li>
+		</ul>
+
+		<h3 th:if="${#lists.isEmpty(customerCoupons)}">You do not have
+			any picked Coupons.</h3>
+
+	</div>
+</th:block>
