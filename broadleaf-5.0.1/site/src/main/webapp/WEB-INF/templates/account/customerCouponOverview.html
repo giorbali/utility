@@ -7,6 +7,7 @@
 				<span class="coupon-amount">Amount</span> 
 				<span class="picked-count">Count</span>
 				<span class="pick-date">Date</span>
+				<span class="pick-date">Download</span>
 			</li>
 			<li class="coupon-info" th:each="customerCoupon : ${customerCoupons}"
 				th:object="${customerCoupon}"
@@ -16,6 +17,7 @@
 					<span class="coupon-amount" blc:price="*{coupon.amount}"></span>
 					<span class="picked-count" th:text="*{count}"></span> 
 					<span class="pick-date" th:text="*{date}"></span>
+					<span class="pick-date"><a th:href="@{|/coupon/download?id=*{coupon.id}|}"><span th:text="*{coupon.name}"></span></a></span>
 				</div>
 				<!-- <div class="coupon-details"></div> -->
 			</li>

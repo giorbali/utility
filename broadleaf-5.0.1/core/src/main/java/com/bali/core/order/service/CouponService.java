@@ -1,5 +1,6 @@
 package com.bali.core.order.service;
 
+import java.io.File;
 import java.util.List;
 
 import org.broadleafcommerce.profile.core.domain.Customer;
@@ -16,5 +17,7 @@ public interface CouponService {
 	void savePickedCoupons(List<Coupon> coupons, Customer customer);
 	
 	List<CustomerCoupon> fetchCustomerCoupons(Customer customer);
+	
+	File generateCouponQR(Coupon coupon);
 
 }
