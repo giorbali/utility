@@ -3,11 +3,11 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.mycompany-community</groupId>
-    <artifactId>ecommerce-website</artifactId>
+    <groupId>ge.paycom</groupId>
+    <artifactId>paycom-website</artifactId>
     <version>5.0</version>
     <packaging>pom</packaging>
-    <name>ecommerce</name>
+    <name>paycom</name>
     <url>http://www.blc-archetype.com</url>
     <properties>
         <blc.version>5.0.1-GA</blc.version>

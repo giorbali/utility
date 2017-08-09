@@ -3,14 +3,14 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.mycompany-community</groupId>
-        <artifactId>ecommerce-website</artifactId>
+        <groupId>ge.paycom</groupId>
+        <artifactId>paycom-website</artifactId>
         <version>5.0</version>
     </parent>
     <artifactId>site</artifactId>
     <packaging>war</packaging>
     <name>site</name>
-    <description>Web Module For Broadleaf Commerce Based ECommerce Site</description>
+    <description>Web Module For Pay Company Site</description>
     <properties>
         <!-- httpsPort and httpPort are used by embedded Tomcat server.-->
         <httpsPort>8443</httpsPort> 
@@ -19,7 +19,7 @@
     </properties>
     <build>
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
-        <finalName>mycompany</finalName>
+        <finalName>paycom</finalName>
         <plugins>
             
             <!-- Generate the SSL keystore -->
