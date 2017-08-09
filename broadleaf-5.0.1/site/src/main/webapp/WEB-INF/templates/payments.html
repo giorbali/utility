@@ -1,0 +1,32 @@
+
+<th:block layout:decorator="layout/fullPageLayout">
+	<head>
+<title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Utility
+	Bill Payments</title>
+	</head>
+
+	<div layout:fragment="content">
+
+				<div class="title_bar">Utility companys</div>
+
+				<table id="customer_utility_payments">
+					<thead>
+						<tr>
+							<th colspan="2" th:text="#{utility.welcome}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td th:text="#{utility.payment.gas}"></td>
+							<td th:text="#{utility.payment.water}"></td>
+						</tr>
+						<tr>
+							<td th:text="#{utility.payment.power}"></td>
+							<td th:text="#{utility.payment.garbage}"></td>
+						</tr>
+
+					</tbody>
+				</table>
+
+	</div>
+</th:block>

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+<title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Utility
+	Bill Payments</title>
+<th:block th:replace="/layout/partials/head"></th:block>
+</head>
+
+<body th:class="${'locale-' + session.blLocale.localeCode}">
+	<div id="notification_bar"></div>
+	<header th:substituteby="layout/partials/header" />
+
+	<div id="content" class="width_setter group" role="main">
+		<nav th:substituteby="layout/partials/nav" />
+
+		<div id="banners">
+			<a th:href="@{/utility}"><img blc:src="@{/img/banner.jpeg}" /></a>
+		</div>
+
+		<!-- <a th:href="@{/register}" style="text-decoration:none">
+            <div id="home_feature">
+                <h2>HOT SAUCE AFICIONADO?</h2> Click to join our Heat Clinic Frequent Care Program. The place to get all the deals on burn treatment.
+            </div>
+        </a> -->
+
+
+		<div class="title_bar">Utility companys</div>
+
+		<table id="customer_utility_payments">
+			<thead>
+				<tr>
+					<th colspan="2" th:text="#{utility.welcome}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr> 
+				<td th:text="#{utility.payment.gas}"></td>
+				<td th:text="#{utility.payment.water}"></td>
+				</tr>
+				<tr> 
+				<td th:text="#{utility.payment.power}"></td>
+				<td th:text="#{utility.payment.garbage}"></td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+
+
+</body>
+</html>

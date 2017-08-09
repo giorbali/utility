@@ -14,13 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.broadleafcommerce.core.web.controller.account.AbstractAccountController;
 import org.broadleafcommerce.profile.core.domain.Customer;
 import org.broadleafcommerce.profile.web.core.CustomerState;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bali.core.order.service.CouponService;
 import com.bali.core.promo.Coupon;
@@ -32,6 +30,11 @@ public class CustomerCouponController extends AbstractAccountController {
 	@Resource(name = "couponService")
 	private CouponService couponService;
 
+	@RequestMapping(value = "/payments", method = RequestMethod.GET)
+	public String payments(HttpServletRequest request, HttpServletResponse response, Model model) {
+		return "payments";
+	}
+	
 	@RequestMapping(value = "/account/customerCoupons", method = RequestMethod.GET)
 	public String viewCustomerCoupons(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Customer customer = CustomerState.getCustomer(request);

@@ -550,6 +550,7 @@ INSERT INTO BLC_MEDIA (MEDIA_ID, URL, TITLE, ALT_TEXT, TAGS) VALUES (60004,'/cms
 INSERT INTO BLC_MEDIA (MEDIA_ID, URL, TITLE, ALT_TEXT, TAGS) VALUES (60005,'/cmsstatic/img/utility/images.png','Power Company','primary', 'Power');
 INSERT INTO BLC_MEDIA (MEDIA_ID, URL, TITLE, ALT_TEXT, TAGS) VALUES (60006,'/cmsstatic/img/utility/internet2.jpeg','ISP','primary', 'ISP');
 INSERT INTO BLC_MEDIA (MEDIA_ID, URL, TITLE, ALT_TEXT, TAGS) VALUES (60007,'/cmsstatic/img/utility/phone.jpeg','Telecom','primary', 'Telecom');
+INSERT INTO BLC_MEDIA (MEDIA_ID, URL, TITLE, ALT_TEXT, TAGS) VALUES (60008,'/cmsstatic/img/utility/cleaning-1.jpeg','Cleaning','primary', 'Cleaning');
 
 ------------------------------------------------------------------------------------------------------------------
 -- Load Catalog - Step 5:  Mapping for product to media
@@ -687,6 +688,7 @@ INSERT INTO BLC_STATIC_ASSET (STATIC_ASSET_ID, MIME_TYPE, STORAGE_TYPE, FULL_URL
 INSERT INTO BLC_STATIC_ASSET (STATIC_ASSET_ID, MIME_TYPE, STORAGE_TYPE, FULL_URL, NAME) VALUES (60005,'image/png','FILESYSTEM','/img/utility/images.png','Power Company');
 INSERT INTO BLC_STATIC_ASSET (STATIC_ASSET_ID, MIME_TYPE, STORAGE_TYPE, FULL_URL, NAME) VALUES (60006,'image/jpeg','FILESYSTEM','/img/utility/internet2.jpeg','ISP');
 INSERT INTO BLC_STATIC_ASSET (STATIC_ASSET_ID, MIME_TYPE, STORAGE_TYPE, FULL_URL, NAME) VALUES (60007,'image/jpeg','FILESYSTEM','/img/utility/phone.jpeg','Telecom');
+INSERT INTO BLC_STATIC_ASSET (STATIC_ASSET_ID, MIME_TYPE, STORAGE_TYPE, FULL_URL, NAME) VALUES (60008,'image/jpeg','FILESYSTEM','/img/utility/cleaning-1.jpeg','Cleaning');
 
 
 ------------------------------------------------------------------------------------------------------------------
@@ -736,3 +738,8 @@ INSERT INTO BLC_FULFILLMENT_OPTION (FULFILLMENT_OPTION_ID, NAME, LONG_DESCRIPTIO
 INSERT INTO BLC_FULFILLMENT_OPTION_FIXED (FULFILLMENT_OPTION_ID, PRICE) VALUES (1, 5.00);
 INSERT INTO BLC_FULFILLMENT_OPTION_FIXED (FULFILLMENT_OPTION_ID, PRICE) VALUES (2, 10.00);
 INSERT INTO BLC_FULFILLMENT_OPTION_FIXED (FULFILLMENT_OPTION_ID, PRICE) VALUES (3, 20.00);
+
+INSERT INTO BLC_CURRENCY (CURRENCY_CODE, DEFAULT_FLAG, FRIENDLY_NAME) VALUES ('GEL', '0', 'Georgian Lari');
+INSERT INTO BLC_LOCALE (LOCALE_CODE, DEFAULT_FLAG, FRIENDLY_NAME, USE_IN_SEARCH_INDEX, CURRENCY_CODE) VALUES ('ge_GE', '0', 'Georgia', '', 'GEL');
+
+

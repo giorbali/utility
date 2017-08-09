@@ -210,7 +210,7 @@
     <!-- you may want to override the bean definitions by uncommenting these two beans -->
     <!-- to control whether or not templates are cacheable. This will generally be desireable -->
     <!-- in production environments, but likely not in development environments. -->
-    <!-- 
+    
     <bean id="blWebTemplateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
         <property name="prefix" value="/WEB-INF/templates/" />
         <property name="suffix" value=".html" />
@@ -227,7 +227,7 @@
         <property name="cacheTTLMs" value="${cache.page.templates.ttl}" />
         <property name="characterEncoding" value="UTF-8" />
     </bean>
-    -->
+   
     
     <bean id="jsLocations" class="org.springframework.beans.factory.config.ListFactoryBean">
         <property name="sourceList">
