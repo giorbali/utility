@@ -336,6 +336,7 @@ header {
     display: block;
     z-index: 50;
     position: relative;
+    padding: 10px 0;
 }
 
     #header_content #logo h1, #header_content_checkout #logo h1 {
