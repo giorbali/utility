@@ -16,6 +16,8 @@
 
 package com.mycompany.controller.catalog;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +28,9 @@ import org.broadleafcommerce.profile.web.core.CustomerState;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bali.core.order.service.CouponService;
 import com.bali.core.order.service.SaldoService;
+import com.bali.core.promo.Coupon;
 
 /**
  * This class works in combination with the CategoryHandlerMapping which finds a category based upon
@@ -37,6 +41,8 @@ public class CategoryController extends BroadleafCategoryController {
 	
 	@Resource(name = "saldoService")
 	protected SaldoService saldoService;
+	@Resource(name = "couponService")
+	private CouponService couponService;
     
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -45,6 +51,8 @@ public class CategoryController extends BroadleafCategoryController {
         if(null != customer && !customer.isAnonymous()){
         	model.addObject("saldo", saldoService.fetchActualSaldoByCustomer(customer));
         } 
+        List<Coupon> coupons = couponService.fetchAllCoupons();
+		model.addObject("coupons", coupons);
         return model;
     }
 

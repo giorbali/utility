@@ -1,13 +1,13 @@
-<!-- <div th:if="*{featuredProduct}" class="new_badge">New!</div> -->
-
-<div class="image">
-    <a th:href="@{*{url}}">
-    <img th:if="*{media['primary']}" blc:src="@{*{media['primary'].url} + '?browse'}" th:alt="*{name}" />
-    </a>
-</div>
-
-<!-- <div class="content2">
-    <div class="title" th:utext="*{name}"></div>
-    <p th:utext="*{longDescription}"></p>
-</div> -->
-
+		<div>
+		
+			<p id="coupon_name" align="center">
+				<span id="coupon_name_txt" th:utext="${coupon.name}"
+					style="font-size: 20pt; color: red;" />
+			</p>
+			<p id="coupon_amount" align="center">
+				<span id="coupon_amount_txt"
+					th:text="${coupon.amount}?:'no amount specified'"
+					style="font-size: 20pt;" />
+			</p>
+			
+		</div>
