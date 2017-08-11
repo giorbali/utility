@@ -15,12 +15,20 @@
                 <th:block th:with="inCart=${cart.containsSku(#object.defaultSku) and #lists.isEmpty(product.productOptions)}"> 
                     <blc:form method="POST" th:action="@{/cart/add}" action="">
                         <div id="account_area">
-                        <label for="accountnumberid"  th:text="#{account.number}">Accountnumber</label>
-                        <input type="text" id="accountnumberid" name="accountnumber" class="field66"/>
+                        <label for="accountnumber"  th:text="#{account.number}">account numberr</label>
+                        <input type="text" id="accountnumber" name="accountnumber" class="field66"/>
                         </div>
-                        <div id="amount_area">
-                        <label for="amountid" th:text="#{account.amount}">Amount</label>
-                        <input type="text" id="amountid" name="amount" class="field66"/>
+                        <div id="billid_area">
+                        <label for="billid" th:text="#{account.bill}">Bill</label>
+                        <input type="text" id="billid" name="billid" class="field66"/>
+                        </div>
+                        <div id="debt_area">
+                        <label for="debtid" th:text="#{account.debt}">Debts</label>
+                        <input type="text" id="debtid" name="debt" class="field66"/>
+                        </div>
+                        <div id="pyment_area">
+                        <label for="paymentid" th:text="#{account.payment}">Payment Amount</label>
+                        <input type="text" id="paymentid" name="payment" class="field66"/>
                         </div>
                         <div th:utext="*{longDescription}" id="description"></div>
                         

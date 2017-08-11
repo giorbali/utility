@@ -63,11 +63,11 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 			return context;
 		}
 		AddUtilityToCartItem utilityOrderItemRequest = (AddUtilityToCartItem)request.getItemRequest();
-		Money moneyAmount = convertAmount(utilityOrderItemRequest);
+		Money debtPayment = fetchPayment(utilityOrderItemRequest);
 		Order order = request.getOrder();
 		final Double saldo = fetchSaldo(order.getCustomer());
-		if(moneyAmount.greaterThan(BigDecimal.valueOf(saldo))){
-			logger.error(String.format("Payment %s exeeds available saldo %s", moneyAmount.getAmount(), saldo));
+		if(debtPayment.greaterThan(BigDecimal.valueOf(saldo))){
+			logger.error(String.format("Payment %s exeeds available saldo %s", debtPayment.getAmount(), saldo));
 		}
 		Sku sku = null;
 		if (utilityOrderItemRequest.getSkuId() != null) {
@@ -96,11 +96,12 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 		orderItemRequest.setItemAttributes(utilityOrderItemRequest.getItemAttributes());
 		orderItemRequest.setOrder(order);
 		UtilityOrderItem utilityOrderItem = this.orderItemService.createUtilityOrderItem(orderItemRequest);
-		utilityOrderItem.setPrice(moneyAmount);
-		if( !chargeCustomerSaldo(moneyAmount, order)){
+		utilityOrderItem.setPrice(debtPayment);
+		if( !chargeCustomerSaldo(debtPayment, order)){
 			return context;
 		}
 		utilityOrderItem.setAccountnumber(utilityOrderItemRequest.getAccountnumber());
+		utilityOrderItem.setBillid(utilityOrderItemRequest.getBillid());
 		utilityOrderItem.setAddress(utilityOrderItemRequest.getAddress());
 		utilityOrderItem.setSku(product.getDefaultSku());
 
@@ -114,6 +115,7 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 		return context;
 	}
 
+	//ToDo: this should be moved to SaldoService
 	private boolean chargeCustomerSaldo(Money moneyAmount, Order order) {
 		Customer customer = order.getCustomer();
 		Double saldo = fetchSaldo(customer);
@@ -135,12 +137,12 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 		return saldoService.fetchActualSaldoByCustomer(customer);
 	}
 
-	private Money convertAmount(AddUtilityToCartItem addToCartItem) {
+	private Money fetchPayment(AddUtilityToCartItem addToCartItem) {
 		Money overrideSalePrice = addToCartItem.getOverrideSalePrice();
 		if(overrideSalePrice != null){
-			return new Money(addToCartItem.getAmount(), overrideSalePrice.getCurrency());
+			return new Money(addToCartItem.getPayment(), overrideSalePrice.getCurrency());
 		} else {
-			return new Money(addToCartItem.getAmount());
+			return new Money(addToCartItem.getPayment());
 		}
 	}
 

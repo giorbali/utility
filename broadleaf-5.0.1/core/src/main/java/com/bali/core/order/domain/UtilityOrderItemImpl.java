@@ -21,7 +21,7 @@ import org.broadleafcommerce.core.order.domain.DiscreteOrderItemImpl;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "BALI_UTILITY_ORDER_ITEM")
-@AdminPresentationClass(friendlyName="UtilityOrderItemImpl_utilityOrderItem")
+@AdminPresentationClass(friendlyName = "UtilityOrderItemImpl_utilityOrderItem")
 public class UtilityOrderItemImpl extends DiscreteOrderItemImpl implements UtilityOrderItem {
 
 	private static final long serialVersionUID = 1L;
@@ -30,17 +30,29 @@ public class UtilityOrderItemImpl extends DiscreteOrderItemImpl implements Utili
 	@AdminPresentation(friendlyName = "UtilityOrderItemImpl_account_number", fieldType = SupportedFieldType.STRING)
 	protected String accountNumber;
 
+	@Column(name = "BILLID")
+	@AdminPresentation(friendlyName = "UtilityOrderItemImpl_billid", fieldType = SupportedFieldType.STRING)
+	protected String billid;
+
+	@Column(name = "PAYMENT")
+	@AdminPresentation(friendlyName = "UtilityOrderItemImpl_payment", fieldType = SupportedFieldType.MONEY)
+	protected Money payment;
+
+	@Column(name = "DEBT")
+	@AdminPresentation(friendlyName = "UtilityOrderItemImpl_debt", fieldType = SupportedFieldType.MONEY)
+	protected Money debt;
+
 	@Column(name = "amount")
 	@AdminPresentation(friendlyName = "UtilityOrderItemImpl_amount", fieldType = SupportedFieldType.MONEY)
 	protected Money amount;
-	
+
 	@Column(name = "address")
 	@AdminPresentation(friendlyName = "UtilityOrderItemImpl_address", fieldType = SupportedFieldType.STRING)
 	protected String address;
-	
-	@ManyToOne(fetch=FetchType.LAZY, targetEntity=SkuImpl.class, optional=false)
-	@JoinColumn(name="SKU_ID", nullable=false)
-	@AdminPresentation(friendlyName="DiscreteOrderItemImpl_Sku", order=3000, group="OrderItemImpl_Catalog", groupOrder=3000)
+
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = SkuImpl.class, optional = false)
+	@JoinColumn(name = "SKU_ID", nullable = false)
+	@AdminPresentation(friendlyName = "DiscreteOrderItemImpl_Sku", order = 3000, group = "OrderItemImpl_Catalog", groupOrder = 3000)
 	@AdminPresentationToOneLookup
 	protected Sku sku;
 
@@ -82,6 +94,36 @@ public class UtilityOrderItemImpl extends DiscreteOrderItemImpl implements Utili
 	@Override
 	public void setSku(Sku sku) {
 		this.sku = sku;
+	}
+
+	@Override
+	public String getBillid() {
+		return this.billid;
+	}
+
+	@Override
+	public void setBillid(String billid) {
+		this.billid = billid;
+	}
+
+	@Override
+	public Money getDebt() {
+		return this.debt;
+	}
+
+	@Override
+	public void setDebt(Money debt) {
+		this.debt = debt;
+	}
+
+	@Override
+	public Money getPayment() {
+		return this.payment;
+	}
+
+	@Override
+	public void setPayment(Money payment) {
+		this.payment = payment;
 	}
 
 }

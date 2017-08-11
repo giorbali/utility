@@ -10,8 +10,14 @@ public interface UtilityOrderItem extends DiscreteOrderItem {
 	void setAccountnumber(String accountnumber);
 	String getAddress();
 	void setAddress(String address);
+	String getBillid();
+	void setBillid(String billid);
 	Money getAmount();
 	void setAmount(Money amount);
+	Money getDebt();
+	void setDebt(Money amount);
+	Money getPayment();
+	void setPayment(Money amount);
 	Sku getSku();
 	void setSku(Sku paramSku);
 }

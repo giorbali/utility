@@ -48,7 +48,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bali.core.order.service.SaldoService;
@@ -92,53 +91,6 @@ public class CartController extends BroadleafCartController {
      * the necessary attributes. By using the @ResposeBody tag, Spring will automatically use Jackson to convert the
      * returned object into JSON for easy processing via JavaScript.
      */
-    @RequestMapping(value = "/addOrg", produces = "application/json")
-    public @ResponseBody Map<String, Object> addJson(HttpServletRequest request, HttpServletResponse response, Model model,
-            @ModelAttribute("addToCartItem") AddToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
-        Map<String, Object> responseMap = new HashMap<String, Object>();
-        try {
-            super.add(request, response, model, addToCartItem);
-            
-            if (addToCartItem.getItemAttributes() == null || addToCartItem.getItemAttributes().size() == 0) {
-                responseMap.put("productId", addToCartItem.getProductId());
-            }
-            responseMap.put("productName", catalogService.findProductById(addToCartItem.getProductId()).getName());
-            responseMap.put("quantityAdded", addToCartItem.getQuantity());
-            responseMap.put("cartItemCount", String.valueOf(CartState.getCart().getItemCount()));
-            if (addToCartItem.getItemAttributes() == null || addToCartItem.getItemAttributes().size() == 0) {
-                // We don't want to return a productId to hide actions for when it is a product that has multiple
-                // product options. The user may want the product in another version of the options as well.
-                responseMap.put("productId", addToCartItem.getProductId());
-            }
-            if(useSku) {
-                responseMap.put("skuId", addToCartItem.getSkuId());
-            }
-        } catch (AddToCartException e) {
-            if (e.getCause() instanceof RequiredAttributeNotProvidedException) {
-                responseMap.put("error", "allOptionsRequired");
-            } else if (e.getCause() instanceof ProductOptionValidationException) {
-                ProductOptionValidationException exception = (ProductOptionValidationException) e.getCause();
-                responseMap.put("error", "productOptionValidationError");
-                responseMap.put("errorCode", exception.getErrorCode());
-                responseMap.put("errorMessage", exception.getMessage());
-                //blMessages.getMessage(exception.get, lfocale))
-            } else if (e.getCause() instanceof InventoryUnavailableException) {
-                responseMap.put("error", "inventoryUnavailable");
-            } else {
-                throw e;
-            }
-        }
-        
-        return responseMap;
-    }
-    
-    /*
-     * The Utility Application does not show the cart when a product is added. Instead, when the product is added via an AJAX
-     * POST that requests JSON, we only need to return a few attributes to update the state of the page. The most
-     * efficient way to do this is to call the regular add controller method, but instead return a map that contains
-     * the necessary attributes. By using the @ResposeBody tag, Spring will automatically use Jackson to convert the
-     * returned object into JSON for easy processing via JavaScript.
-     */
     @RequestMapping(value = "/addutility", produces = "application/json")
     public String addUtilityJson(HttpServletRequest request, HttpServletResponse response, Model model,
     		@ModelAttribute("addToCartItem") AddUtilityToCartItem addToCartItem) throws IOException, PricingException, AddToCartException {
@@ -155,7 +107,9 @@ public class CartController extends BroadleafCartController {
     		responseMap.put("cartItemCount", String.valueOf(CartState.getCart().getItemCount()));
     		responseMap.put("accountnumber", String.valueOf(addToCartItem.getAccountnumber()));
     		responseMap.put("address", String.valueOf(addToCartItem.getAddress()));
-    		responseMap.put("amount", String.valueOf(addToCartItem.getAmount()));
+    		responseMap.put("payment", String.valueOf(addToCartItem.getPayment()));
+    		responseMap.put("debt", String.valueOf(addToCartItem.getDebt()));
+    		responseMap.put("bill", String.valueOf(addToCartItem.getBillid()));
     		if (addToCartItem.getItemAttributes() == null || addToCartItem.getItemAttributes().size() == 0) {
     			// We don't want to return a productId to hide actions for when it is a product that has multiple
     			// product options. The user may want the product in another version of the options as well.
@@ -194,8 +148,6 @@ public class CartController extends BroadleafCartController {
         try {
         	return super.add(request, response, model, addToCartItem);
         } catch (AddToCartException e) {
-//            Product product = catalogService.findProductById(addToCartItem.getProductId());
-//            return "redirect:" + product.getUrl();
             return "redirect:/";
         }
     }
