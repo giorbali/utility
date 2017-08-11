@@ -1,6 +1,5 @@
-/* The Heat Clinic global module. This contains variables and functions
- * used by various other areas of the site */
-var HC = (function($) {
+
+var PC = (function($) {
     
     function showFacetMultiselect(abbr) {
         $.modal($('#facet-' + abbr), {

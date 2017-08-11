@@ -5,7 +5,7 @@
         <h3>
             <span th:utext="${facetDto.facet.label}" th:remove="tag"></span>
             <a th:if="${facetDto.facet.canMultiselect}" 
-                th:attr="onclick=${'HC.showFacetMultiselect(''__${facetDto.facet.field.abbreviation}__'')'}"
+                th:attr="onclick=${'PC.showFacetMultiselect(''__${facetDto.facet.field.abbreviation}__'')'}"
                 href="javascript:;" 
                 class="remove_facet_values">[ <span th:utext="#{facet.edit}">Edit</span> ]</a>
             <a blc:removefacetvalueslink="${facetDto}" class="remove_facet_values">[ Clear ]</a>
@@ -39,7 +39,7 @@
             </li>
             <li>
                 <a th:if="${facetDto.facet.canMultiselect}" 
-                    th:attr="onclick=${'HC.showFacetMultiselect(''__${facetDto.facet.field.abbreviation}__'')'}"
+                    th:attr="onclick=${'PC.showFacetMultiselect(''__${facetDto.facet.field.abbreviation}__'')'}"
                     href="javascript:;" 
                     class="maker multiple"><span th:utext="#{facet.chooseMultiple}">Choose Multiple...</span></a>
             </li>

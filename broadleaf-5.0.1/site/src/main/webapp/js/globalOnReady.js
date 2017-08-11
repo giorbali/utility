@@ -15,7 +15,7 @@ $(function(){
     }
 
     // Update the locale that has been selected
-    HC.updateLocaleSelection();
+    PC.updateLocaleSelection();
 
     // Show the JavaScript version of product options if the user has JavaScript enabled
     $('.product-options').removeClass('hidden');
@@ -23,7 +23,7 @@ $(function(){
 
     // Bind the JavaScript product option boxes to execute on click
     $('body').on('click', '.product-option-group li:not(.unavailable)', function() {
-        HC.changeProductOption($(this));
+        PC.changeProductOption($(this));
         return false;
     });
 

@@ -119,9 +119,9 @@ $(function(){
                         	$productOptionsSpan.effect('highlight', {}, 1000);
                         	
                         } else if (data.error = 'inventoryUnavailable') {
-                            HC.showNotification("This item is no longer in stock. We apologize for the inconvenience.", 7000);
+                            PC.showNotification("This item is no longer in stock. We apologize for the inconvenience.", 7000);
                         } else {
-                            HC.showNotification("Error adding to cart");
+                            PC.showNotification("Error adding to cart");
                         }
                     } else {
                         $errorSpan.css('display', 'none'); 
@@ -141,9 +141,9 @@ $(function(){
                         }
                         
                         if (wishlistAdd) {
-                            HC.showNotification(data.productName + "  has been added to your wishlist!");
+                            PC.showNotification(data.productName + "  has been added to your wishlist!");
                         } else {
-                            HC.showNotification(data.productName + "  has been added to the cart!", 2000);
+                            PC.showNotification(data.productName + "  has been added to the cart!", 2000);
                         }
                     }
                 }
