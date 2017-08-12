@@ -105,20 +105,24 @@ public class CheckoutController extends BroadleafCheckoutController {
 			@ModelAttribute("giftCardInfoForm") GiftCardInfoForm giftCardInfoForm,
 			@ModelAttribute("orderInfoForm") OrderInfoForm orderInfoForm, BindingResult result)
 			throws ServiceException {
-		if (couponPickForm != null) {
-			Coupon coupon = couponService.fetchById(couponPickForm.getCouponId());
-			List<Coupon> pickedCoupons = fetchPickedCoupons();
-			if (CollectionUtils.isNotEmpty(pickedCoupons)) {
-				long sumPickedCoupons = pickedCoupons.stream().mapToLong(c -> c.getAmount()).sum();
-				if (Double.valueOf(sumPickedCoupons + coupon.getAmount()) > CartState.getCart().getTotal()
-						.doubleValue()) {
-					logger.error(String.format("Cannot add coupon %s", coupon.getName()));
-					return "redirect:/checkout";
-				}
-			}
-			pickedCoupons.add(coupon);
-			storePickedCoupons(pickedCoupons);
+		if (couponPickForm == null) {
+			return "redirect:/checkout";
 		}
+		final Coupon coupon = couponService.fetchById(couponPickForm.getCouponId());
+		final double cartTotal = CartState.getCart().getTotal().doubleValue();
+		if (Double.compare(Double.valueOf(coupon.getAmount()), cartTotal) == 1){
+			return "redirect:/checkout";
+		}
+		List<Coupon> pickedCoupons = fetchPickedCoupons();
+		if (CollectionUtils.isNotEmpty(pickedCoupons)) {
+			long sumPickedCoupons = pickedCoupons.stream().mapToLong(c -> c.getAmount()).sum();
+			if (Double.valueOf(sumPickedCoupons + coupon.getAmount()) > cartTotal) {
+				logger.error(String.format("Cannot add coupon %s", coupon.getName()));
+				return "redirect:/checkout";
+			}
+		}
+		pickedCoupons.add(coupon);
+		storePickedCoupons(pickedCoupons);
 		return "redirect:/checkout";
 	}
 
