@@ -8,6 +8,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+import org.broadleafcommerce.common.media.domain.Media;
 import org.broadleafcommerce.common.presentation.AdminPresentation;
 import org.broadleafcommerce.common.presentation.AdminPresentationClass;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,16 +31,20 @@ public class CouponImpl implements Coupon {
 	private Long id;
 
 	@Column(name = "NAME")
-	@AdminPresentation(friendlyName = "CouponImpl_Coupon_Name", group = "General", order = 1000)
+	@AdminPresentation(friendlyName = "Coupon Name", group = "General", order = 1000, prominent = true)
 	private String name;
 
 	@Column(name = "COUPON_COUNT")
-	@AdminPresentation(friendlyName = "CouponImpl_Coupon_Count", group = "General", order = 6000, prominent = true, gridOrder = 3000)
+	@AdminPresentation(friendlyName = "Coupon Count", group = "General", order = 6000, prominent = true, gridOrder = 3000)
 	private Long count;
 	
 	@Column(name = "COUPON_AMOUNT")
-	@AdminPresentation(friendlyName = "CouponImpl_Coupon_Amount", group = "General", order = 6000, prominent = true, gridOrder = 3000)
+	@AdminPresentation(friendlyName = "Coupon Amount", group = "General", order = 6000, prominent = true, gridOrder = 3000)
 	private Long amount;
+	
+	@Column(name = "COUPON_MEDIA")
+	@AdminPresentation(friendlyName = "Coupon Media", group = "Media", order = 6000, prominent = true, gridOrder = 3000)
+	private Media media;
 
 	@Override
 	public Long getId() {
@@ -79,6 +84,16 @@ public class CouponImpl implements Coupon {
 	@Override
 	public void setAmount(Long paramLong) {
 		this.amount = paramLong;
+	}
+
+	@Override
+	public Media getMedia() {
+		return this.media;
+	}
+
+	@Override
+	public void setMedia(Media media) {
+		this.media = media;
 	}
 
 }

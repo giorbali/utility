@@ -2,23 +2,28 @@ package com.bali.core.promo;
 
 import java.io.Serializable;
 
+import org.broadleafcommerce.common.media.domain.Media;
+
 public interface Coupon extends Serializable {
 	
-	public abstract Long getId();
+	Long getId();
 
-	public abstract void setId(Long paramLong);
+	void setId(Long paramLong);
 
-	public abstract String getName();
+	String getName();
 
-	public abstract void setName(String paramString);
+	void setName(String paramString);
 	
-	public abstract Long getCount();
+	Long getCount();
 
-	public abstract void setCount(Long paramLong);
+	void setCount(Long paramLong);
 	
-	public abstract Long getAmount();
+	Long getAmount();
 	
-	public abstract void setAmount(Long paramLong);
+	void setAmount(Long paramLong);
+	
+	Media getMedia();
+	void setMedia(Media media);
 	
 
 }
