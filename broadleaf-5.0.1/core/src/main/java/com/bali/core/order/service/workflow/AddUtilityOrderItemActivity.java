@@ -97,7 +97,7 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 		orderItemRequest.setOrder(order);
 		UtilityOrderItem utilityOrderItem = this.orderItemService.createUtilityOrderItem(orderItemRequest);
 		utilityOrderItem.setPrice(debtPayment);
-		if( !chargeCustomerSaldo(debtPayment, order)){
+		if( !chargeCustomerSaldo(debtPayment, order, utilityOrderItem)){
 			return context;
 		}
 		utilityOrderItem.setAccountnumber(utilityOrderItemRequest.getAccountnumber());
@@ -116,7 +116,7 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 	}
 
 	//ToDo: this should be moved to SaldoService
-	private boolean chargeCustomerSaldo(Money moneyAmount, Order order) {
+	private boolean chargeCustomerSaldo(Money moneyAmount, Order order, UtilityOrderItem utilityOrderItem) {
 		Customer customer = order.getCustomer();
 		Double saldo = fetchSaldo(customer);
 		if(BigDecimal.valueOf(saldo).compareTo(moneyAmount.getAmount()) == -1) {
@@ -129,6 +129,7 @@ public class AddUtilityOrderItemActivity extends BaseActivity<ProcessContext<Car
 		customerSaldo.setDate(DateTime.now().toDate());
 		customerSaldo.setDescription(String.format("Charge amount:%s by Order:%s", moneyAmount.getAmount(), order.getId()));
 		customerSaldo.setSaldo(moneyAmount.getAmount().doubleValue());
+		customerSaldo.setOrderItem(utilityOrderItem);
 		saldoService.saveSaldo(customerSaldo);
 		return true;
 	}

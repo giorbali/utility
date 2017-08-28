@@ -10,12 +10,14 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.broadleafcommerce.common.presentation.AdminPresentation;
 import org.broadleafcommerce.common.presentation.AdminPresentationClass;
 import org.broadleafcommerce.common.presentation.AdminPresentationToOneLookup;
-import org.broadleafcommerce.common.presentation.client.SupportedFieldType;
+import org.broadleafcommerce.core.order.domain.OrderItem;
+import org.broadleafcommerce.core.order.domain.OrderItemImpl;
 import org.broadleafcommerce.profile.core.domain.Customer;
 import org.broadleafcommerce.profile.core.domain.CustomerImpl;
 import org.hibernate.annotations.GenericGenerator;
@@ -37,12 +39,18 @@ public class CustomerSaldoImpl implements CustomerSaldo {
 	@Column(name = "CUSTOMERSALDO_ID")
 	private Long id;
 
-	@ManyToOne(targetEntity = CustomerImpl.class, optional=false)
-    @JoinColumn(name = "CUSTOMER_ID")
-	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Customer", group = "General", order = 1000, prominent = true )
+	@ManyToOne(targetEntity = CustomerImpl.class, optional = false)
+	@JoinColumn(name = "CUSTOMER_ID")
+	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Customer", group = "General", order = 1000, prominent = true)
 	@AdminPresentationToOneLookup()
 	private Customer customer;
-	
+
+	@OneToOne(targetEntity = OrderItemImpl.class, optional = true)
+	@JoinColumn(name = "ORDER_ITEM")
+	@AdminPresentation(friendlyName = "OrderItem", group = "General", order = 1000, prominent = true)
+	@AdminPresentationToOneLookup()
+	private OrderItem orderItem;
+
 	@Column(name = "DESCRIPTION")
 	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Description", group = "General", order = 1100, prominent = true)
 	private String description;
@@ -117,6 +125,16 @@ public class CustomerSaldoImpl implements CustomerSaldo {
 	@Override
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	@Override
+	public OrderItem getOrderItem() {
+		return this.orderItem;
+	}
+
+	@Override
+	public void setOrderItem(OrderItem orderItem) {
+		this.orderItem = orderItem;
 	}
 
 }

@@ -9,13 +9,13 @@
 	<tbody>
 		<tr th:each="item : ${cart.orderItems}" th:object="${item}"
 			th:id="${'productRow' + item.id}">
-			<td><th:block
+			<td align="center"><th:block
 					th:unless="*{#lists.isEmpty(sku.productOptionValues)}"
 					th:each="optionValue : *{sku.productOptionValues}">
 					<img
 						th:if="${optionValue.attributeValue == item.sku.skuMedia['primary']?.tags}"
 						blc:src="@{*{sku.skuMedia['primary'].url} + '?thumbnail'}"
-						width="60" th:alt="*{sku.name}" />
+						width="60" th:alt="*{sku.name}"  align="center" />
 					<img
 						th:if="${optionValue.attributeValue == item.sku.skuMedia['alt1']?.tags}"
 						blc:src="@{*{sku.skuMedia['alt1'].url} + '?thumbnail'}" width="60"
@@ -28,7 +28,8 @@
 				blc:src="@{*{sku.skuMedia['primary']?.url} + '?thumbnail'}"
 				width="60" th:alt="*{sku.name}" /></td>
 			<td align="center"><span th:text="*{accountnumber}"></span></td>
-			<td align="center"><span blc:price="*{amount}"></span></td>
+			<td align="center"><span blc:price="*{price}"></span></td>
+			<td align="center"><a th:href="@{'/cart/removeItem/' + ${item.id}}">delete</a></td>
 			<!-- <td class="name"><a
 				th:unless="${@blSystemPropertiesService.resolveBooleanSystemProperty('solr.index.use.sku')}"
 				th:href="@{*{product.url}}" th:utext="*{product.name}"></a> <a

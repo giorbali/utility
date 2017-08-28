@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.broadleafcommerce.core.order.domain.OrderItem;
 import org.broadleafcommerce.profile.core.domain.Customer;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,21 @@ public class SaldoServiceImpl implements SaldoService {
 	@Override
 	public void saveSaldo(CustomerSaldo customerSaldo) {
 		customerSaldoDao.save(customerSaldo);
+	}
+
+	@Override
+	public void removeSaldo(OrderItem orderItem) {
+		CustomerSaldo saldo = fetchSaldoBy(orderItem);
+		if (saldo == null) {
+			logger.error(String.format("No saldo by orderItem %s", orderItem.getId()));
+			return;
+		}
+		customerSaldoDao.remove(saldo);
+	}
+
+	@Override
+	public CustomerSaldo fetchSaldoBy(OrderItem orderItem) {
+		return customerSaldoDao.findBy(orderItem);
 	}
 
 }

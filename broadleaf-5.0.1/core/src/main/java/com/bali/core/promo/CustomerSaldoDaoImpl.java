@@ -21,6 +21,7 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.broadleafcommerce.core.order.domain.OrderItem;
 import org.broadleafcommerce.profile.core.domain.Customer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -88,6 +89,40 @@ public class CustomerSaldoDaoImpl implements CustomerSaldoDao {
 	@Override
 	public void save(CustomerSaldo customerSaldo) {
 		em.persist(customerSaldo);
+	}
+
+	@Override
+	public CustomerSaldo findBy(OrderItem orderItem) {
+		if (orderItem == null) {
+			logger.error("orderItem cannot be null");
+			return null;
+		}
+		CriteriaBuilder criteriaBuilder = this.em.getCriteriaBuilder();
+		Metamodel metamodel = this.em.getMetamodel();
+		EntityType<CustomerSaldoImpl> customerSaldo_ = metamodel.entity(CustomerSaldoImpl.class);
+		CriteriaQuery<CustomerSaldo> criteriaQuery = criteriaBuilder.createQuery(CustomerSaldo.class);
+		Root<CustomerSaldoImpl> root = criteriaQuery.from(CustomerSaldoImpl.class);
+		criteriaQuery.select(root);
+		criteriaQuery.where(criteriaBuilder.equal(root.get(customerSaldo_.getSingularAttribute("orderItem")), orderItem));
+		TypedQuery<CustomerSaldo> query = this.em.createQuery(criteriaQuery);
+
+		List<CustomerSaldo> resultList = query.getResultList();
+		if (CollectionUtils.isEmpty(resultList)) {
+			logger.error(String.format("No Saldo found by orderItem(id:%s).", orderItem.getId()));
+			return null;
+		} else if (resultList.size() > 1) {
+			logger.error(String.format("More then one Saldo found by orderItem(id:%s).", orderItem.getId()));
+			return null;
+		}
+		return resultList.iterator().next();
+	}
+
+	@Override
+	public void remove(CustomerSaldo customerSaldo) {
+		if(customerSaldo == null) {
+			return;
+		}
+		em.remove(customerSaldo);
 	}
 
 }
