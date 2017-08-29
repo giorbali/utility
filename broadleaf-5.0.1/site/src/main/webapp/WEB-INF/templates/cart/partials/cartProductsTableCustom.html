@@ -29,7 +29,7 @@
 				width="60" th:alt="*{sku.name}" /></td>
 			<td align="center"><span th:text="*{accountnumber}"></span></td>
 			<td align="center"><span blc:price="*{price}"></span></td>
-			<td align="center"><a th:href="@{'/cart/removeItem/' + ${item.id}}">delete</a></td>
+			<td align="center"><a th:href="@{'/cart/removeItem/' + ${item.id}}"><img alt="delete" th:src="@{/img/x.png}"/></a></td>
 			<!-- <td class="name"><a
 				th:unless="${@blSystemPropertiesService.resolveBooleanSystemProperty('solr.index.use.sku')}"
 				th:href="@{*{product.url}}" th:utext="*{product.name}"></a> <a
