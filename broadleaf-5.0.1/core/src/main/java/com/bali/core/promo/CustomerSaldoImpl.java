@@ -41,7 +41,7 @@ public class CustomerSaldoImpl implements CustomerSaldo {
 
 	@ManyToOne(targetEntity = CustomerImpl.class, optional = false)
 	@JoinColumn(name = "CUSTOMER_ID")
-	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Customer", group = "General", order = 1000, prominent = true)
+	@AdminPresentation(friendlyName = "Customer", group = "General", order = 1000, prominent = true)
 	@AdminPresentationToOneLookup()
 	private Customer customer;
 
@@ -52,19 +52,19 @@ public class CustomerSaldoImpl implements CustomerSaldo {
 	private OrderItem orderItem;
 
 	@Column(name = "DESCRIPTION")
-	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Description", group = "General", order = 1100, prominent = true)
+	@AdminPresentation(friendlyName = "Description", group = "General", order = 1100, prominent = true)
 	private String description;
 
 	@Column(name = "TYPE")
-	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Type", group = "General", order = 1200, prominent = true)
+	@AdminPresentation(friendlyName = "Type", group = "General", order = 1200, prominent = true)
 	private String type;
 
 	@Column(name = "SALDO")
-	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Saldo", group = "General", order = 1300, prominent = true)
+	@AdminPresentation(friendlyName = "Saldo", group = "General", order = 1300, prominent = true)
 	protected Double saldo;
 
 	@Column(name = "DATE")
-	@AdminPresentation(friendlyName = "CustomerSaldoImpl_CustomerSaldo_Date", group = "General", order = 1400, prominent = true)
+	@AdminPresentation(friendlyName = "Date", group = "General", order = 1400, prominent = true)
 	protected Date date;
 
 	@Override

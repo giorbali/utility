@@ -1,16 +1,23 @@
 package com.bali.core.promo;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.broadleafcommerce.common.media.domain.Media;
 import org.broadleafcommerce.common.presentation.AdminPresentation;
 import org.broadleafcommerce.common.presentation.AdminPresentationClass;
+import org.broadleafcommerce.common.presentation.AdminPresentationToOneLookup;
+import org.broadleafcommerce.profile.core.domain.Customer;
+import org.broadleafcommerce.profile.core.domain.CustomerImpl;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -30,6 +37,10 @@ public class CouponImpl implements Coupon {
 	@Column(name = "COUPON_ID")
 	private Long id;
 
+	@Column(name = "CODE")
+	@AdminPresentation(friendlyName = "Code", group = "General", order = 1000, prominent = true)
+	private String code;
+	
 	@Column(name = "NAME")
 	@AdminPresentation(friendlyName = "Coupon Name", group = "General", order = 1000, prominent = true)
 	private String name;
@@ -43,8 +54,22 @@ public class CouponImpl implements Coupon {
 	private Long amount;
 	
 	@Column(name = "COUPON_MEDIA")
-	@AdminPresentation(friendlyName = "Coupon Media", group = "Media", order = 6000, prominent = true, gridOrder = 3000)
+	@AdminPresentation(friendlyName = "Coupon Media", group = "General", order = 6000, prominent = true, gridOrder = 3000)
 	private Media media;
+	
+	@ManyToOne(targetEntity = CustomerImpl.class, optional = true)
+	@JoinColumn(name = "COUPON_PROVIDER")
+	@AdminPresentation(friendlyName = "Provider", group = "General", order = 1000, prominent = true)
+	@AdminPresentationToOneLookup()
+	private Customer provider;
+	
+	@Column(name = "VALID_FROM")
+	@AdminPresentation(friendlyName = "Valid from", group = "General", order = 1400, prominent = true)
+	protected Date validFrom;
+	
+	@Column(name = "VALID_TO")
+	@AdminPresentation(friendlyName = "Valid to", group = "General", order = 1400, prominent = true)
+	protected Date validTo;
 
 	@Override
 	public Long getId() {
@@ -94,6 +119,46 @@ public class CouponImpl implements Coupon {
 	@Override
 	public void setMedia(Media media) {
 		this.media = media;
+	}
+
+	@Override
+	public Customer getProvider() {
+		return this.provider;
+	}
+
+	@Override
+	public void setProvider(Customer provider) {
+		this.provider = provider;
+	}
+
+	@Override
+	public Date getValidFrom() {
+		return this.validFrom;
+	}
+
+	@Override
+	public void setValidFrom(Date validFrom) {
+		this.validFrom = validFrom;
+	}
+
+	@Override
+	public Date getValidTo() {
+		return this.validTo;
+	}
+
+	@Override
+	public void setValidTo(Date validTo) {
+		this.validTo = validTo;
+	}
+
+	@Override
+	public String getCode() {
+		return this.code;
+	}
+
+	@Override
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }
