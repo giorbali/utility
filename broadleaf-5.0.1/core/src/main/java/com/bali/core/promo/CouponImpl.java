@@ -10,6 +10,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import org.broadleafcommerce.common.media.domain.Media;
@@ -20,6 +22,8 @@ import org.broadleafcommerce.profile.core.domain.Customer;
 import org.broadleafcommerce.profile.core.domain.CustomerImpl;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import com.bali.core.id.CouponCodeGenerator;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -37,6 +41,10 @@ public class CouponImpl implements Coupon {
 	@Column(name = "COUPON_ID")
 	private Long id;
 
+	@GeneratedValue(generator = "CouponCode")
+	@GenericGenerator(name = "CouponCode", strategy = "com.bali.core.id.CouponCodeGenerator", parameters = {
+			@Parameter(name = "segment_value", value = "CouponImpl"),
+			@Parameter(name = "entity_name", value = "com.bali.core.promo.CouponImpl") })
 	@Column(name = "CODE")
 	@AdminPresentation(friendlyName = "Code", group = "General", order = 1000, prominent = true)
 	private String code;
@@ -70,6 +78,15 @@ public class CouponImpl implements Coupon {
 	@Column(name = "VALID_TO")
 	@AdminPresentation(friendlyName = "Valid to", group = "General", order = 1400, prominent = true)
 	protected Date validTo;
+	
+	@PrePersist 
+	@PreUpdate
+	void onPrePersist() {
+		if(this.code == null) {
+			this.code = String.valueOf(CouponCodeGenerator.generate());
+			System.out.println("Coupon.code = " + this.code);
+		}
+	}
 
 	@Override
 	public Long getId() {
