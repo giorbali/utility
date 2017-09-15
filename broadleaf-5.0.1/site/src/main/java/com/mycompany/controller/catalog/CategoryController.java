@@ -25,12 +25,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.broadleafcommerce.core.web.controller.catalog.BroadleafCategoryController;
 import org.broadleafcommerce.profile.core.domain.Customer;
 import org.broadleafcommerce.profile.web.core.CustomerState;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bali.core.order.service.CouponService;
 import com.bali.core.order.service.SaldoService;
 import com.bali.core.promo.Coupon;
+import com.bali.core.promo.CouponImpl;
 
 /**
  * This class works in combination with the CategoryHandlerMapping which finds a category based upon
@@ -51,7 +53,7 @@ public class CategoryController extends BroadleafCategoryController {
         if(null != customer && !customer.isAnonymous()){
         	model.addObject("saldo", saldoService.fetchActualSaldoByCustomer(customer));
         } 
-        List<Coupon> coupons = couponService.fetchAllCoupons();
+        List<Coupon> coupons = couponService.fetchValidCouponsOn(DateTime.now().toDate());
 		model.addObject("coupons", coupons);
         return model;
     }

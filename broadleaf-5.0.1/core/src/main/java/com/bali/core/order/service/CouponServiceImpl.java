@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import com.bali.core.promo.Coupon;
 import com.bali.core.promo.CouponDao;
+import com.bali.core.promo.CouponImpl;
 import com.bali.core.promo.CouponOrderDao;
 import com.bali.core.promo.CustomerCoupon;
 import com.bali.core.promo.CustomerCouponDao;
@@ -140,6 +142,11 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public void generateCouponsFrom(Coupon baseCoupon) {
 		couponDao.generateCouponsFrom(baseCoupon);
+	}
+
+	@Override
+	public List<Coupon> fetchValidCouponsOn(Date date) {
+		return couponDao.fetchValidCouponsOn(date);
 	}
 
 }
