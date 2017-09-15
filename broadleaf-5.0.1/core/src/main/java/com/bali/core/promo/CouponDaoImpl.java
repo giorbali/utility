@@ -42,7 +42,8 @@ public class CouponDaoImpl implements CouponDao {
 		 * parameterDate);
 		 */
 		TypedQuery<Coupon> query = em.createQuery(
-				"select c from CouponImpl as c where :dateparam between validFrom and validTo group by c.provider, c.name",
+				"select c from CouponImpl as c where not exists (select cc from CustomerCouponImpl as cc where cc.coupon.id = c.id) "
+				+ "and  :dateparam between validFrom and validTo group by c.provider, c.name",
 				Coupon.class);
 		query.setParameter("dateparam", date);
 		return query.getResultList();
