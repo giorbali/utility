@@ -19,5 +19,7 @@ public interface CouponService {
 	List<CustomerCoupon> fetchCustomerCoupons(Customer customer);
 	
 	File generateCouponQR(Coupon coupon);
+	
+	void generateCouponsFrom(Coupon baseCoupon);
 
 }

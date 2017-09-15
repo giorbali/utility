@@ -137,4 +137,9 @@ public class CouponServiceImpl implements CouponService {
 		return myFile;
 	}
 
+	@Override
+	public void generateCouponsFrom(Coupon baseCoupon) {
+		couponDao.generateCouponsFrom(baseCoupon);
+	}
+
 }

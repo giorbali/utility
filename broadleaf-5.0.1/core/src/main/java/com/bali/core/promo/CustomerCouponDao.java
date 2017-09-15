@@ -10,5 +10,4 @@ public interface CustomerCouponDao extends Serializable {
 	List<CustomerCoupon> findAllByCustomer(Customer customer);
 	void save(CustomerCoupon customerCoupon);
 	void saveAllCustomerCoupons(List<CustomerCoupon> customerCoupons);
-
 }

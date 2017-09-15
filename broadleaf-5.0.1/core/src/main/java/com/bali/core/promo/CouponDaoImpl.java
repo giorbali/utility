@@ -64,4 +64,18 @@ public class CouponDaoImpl implements CouponDao {
 		return resultList.iterator().next();
 	}
 
+
+	@Override
+	public void generateCouponsFrom(Coupon baseCoupon) {
+		Long count = baseCoupon.getCount();
+		if(count == null || count == 0) {
+			return;
+		}
+		for(int i = 0; i < baseCoupon.getCount(); i++) {
+			em.detach(baseCoupon);
+			baseCoupon.setId(null);
+			em.persist(baseCoupon);
+		}
+	}
+
 }

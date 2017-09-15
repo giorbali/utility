@@ -149,5 +149,9 @@
     <bean id="blResourceBundlingService" class="org.broadleafcommerce.common.resource.service.ResourceBundlingServiceImpl">
         <property name="additionalBundleFiles" ref="blJsFileMap"/>
     </bean>
+    <bean id="couponService" class="com.bali.core.order.service.CouponServiceImpl" />
+    <bean id="couponDao" class="com.bali.core.promo.CouponDaoImpl" />
+    <bean id="couponOrderDao" class="com.bali.core.promo.CouponOrderDaoImpl" />
+    <bean id="customerCouponDao" class="com.bali.core.promo.CustomerCouponDaoImpl" />
     
 </beans>

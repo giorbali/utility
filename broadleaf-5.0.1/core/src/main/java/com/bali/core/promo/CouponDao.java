@@ -6,5 +6,6 @@ public interface CouponDao {
 	
 	List<Coupon> readAllCoupons();
 	Coupon fetchById(Long id);
+	void generateCouponsFrom(Coupon baseCoupon);
 
 }
