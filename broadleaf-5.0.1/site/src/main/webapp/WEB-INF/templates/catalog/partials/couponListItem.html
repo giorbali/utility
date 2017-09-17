@@ -1,13 +1,16 @@
 		<div>
 		
+			<p id="coupon_amount" align="center">
+				<span id="coupon_amount_txt"
+					th:text="${coupon.amount}"
+					style="font-size: 20pt;" />
+				<span id="coupon_amount_currency"
+					th:text="' ლ'"
+					style="font-size: 10pt;" />
+			</p>
 			<p id="coupon_name" align="center">
 				<span id="coupon_name_txt" th:utext="${coupon.name}"
 					style="font-size: 10pt; color: red;" />
-			</p>
-			<p id="coupon_amount" align="center">
-				<span id="coupon_amount_txt"
-					th:text="${coupon.amount}?:'no amount specified'"
-					style="font-size: 20pt;" />
 			</p>
 			
 		</div>
