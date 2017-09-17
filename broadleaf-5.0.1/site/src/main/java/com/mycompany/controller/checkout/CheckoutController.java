@@ -40,6 +40,7 @@ import org.broadleafcommerce.core.web.checkout.model.ShippingInfoForm;
 import org.broadleafcommerce.core.web.controller.checkout.BroadleafCheckoutController;
 import org.broadleafcommerce.core.web.order.CartState;
 import org.broadleafcommerce.profile.web.core.CustomerState;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -79,7 +80,7 @@ public class CheckoutController extends BroadleafCheckoutController {
 			@ModelAttribute("customerCreditInfoForm") CustomerCreditInfoForm customerCreditInfoForm,
 			RedirectAttributes redirectAttributes) {
 		model.addAttribute("saldo", saldoService.fetchActualSaldoByCustomer(getCustomer()));
-		List<Coupon> coupons = couponService.fetchAllCoupons();
+		List<Coupon> coupons = couponService.fetchValidCouponsOn(DateTime.now().toDate());
 		model.addAttribute("coupons", coupons);
 		List<Coupon> pickedCoupons = fetchPickedCoupons();
 		long pickedCouponAmount = pickedCoupons.stream().mapToLong(c -> c.getAmount()).sum();

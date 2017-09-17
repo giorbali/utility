@@ -35,7 +35,7 @@
 				<ul id="coupons" class="group">
 					<li th:each="coupon : ${coupons}" th:object="${coupon}"
 						th:include="checkout/partials/couponListItem"
-						class="product_container"></li>
+						class="product_container" style="list-style:none;"></li>
 				</ul>
 				<div>
 					<blc:form th:action="@{/checkout/clearCouponSelection}"
