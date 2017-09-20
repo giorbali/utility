@@ -7,6 +7,7 @@ public interface CouponDao {
 	
 	List<Coupon> readAllCoupons();
 	List<Coupon> fetchValidCouponsOn(Date date);
+	List<Coupon> fetchAllValidCouponsOn(Date date);
 	Coupon fetchById(Long id);
 	void generateCouponsFrom(Coupon baseCoupon);
 

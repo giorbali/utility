@@ -32,15 +32,6 @@ public class CouponDaoImpl implements CouponDao {
 
 	@Override
 	public List<Coupon> fetchValidCouponsOn(Date date) {
-		/*
-		 * CriteriaQuery<Coupon> criteria = builder.createQuery(Coupon.class);
-		 * Root<CouponImpl> coupon = criteria.from(CouponImpl.class);
-		 * ParameterExpression<Date> parameterDate = builder.parameter(Date.class,
-		 * "dateParam"); criteria.select(coupon).where(builder.between(parameterDate,
-		 * coupon.get("validFrom"), coupon.get("validTo"))); TypedQuery<Coupon> query =
-		 * this.em.createQuery(criteria); query.setParameter("dateParam",
-		 * parameterDate);
-		 */
 		TypedQuery<Coupon> query = em.createQuery(
 				"select c from CouponImpl as c where not exists (select cc from CustomerCouponImpl as cc where cc.coupon.id = c.id) "
 				+ "and  :dateparam between validFrom and validTo group by c.provider, c.name",
@@ -94,6 +85,16 @@ public class CouponDaoImpl implements CouponDao {
 			baseCoupon.setId(null);
 			em.persist(baseCoupon);
 		}
+	}
+
+	@Override
+	public List<Coupon> fetchAllValidCouponsOn(Date date) {
+		TypedQuery<Coupon> query = em.createQuery(
+				"select c from CouponImpl as c where not exists (select cc from CustomerCouponImpl as cc where cc.coupon.id = c.id) "
+				+ "and  :dateparam between validFrom and validTo ",
+				Coupon.class);
+		query.setParameter("dateparam", date);
+		return query.getResultList();
 	}
 
 }

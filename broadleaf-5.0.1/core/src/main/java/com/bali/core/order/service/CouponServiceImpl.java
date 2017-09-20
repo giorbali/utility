@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import com.bali.core.promo.Coupon;
 import com.bali.core.promo.CouponDao;
-import com.bali.core.promo.CouponImpl;
 import com.bali.core.promo.CouponOrderDao;
 import com.bali.core.promo.CustomerCoupon;
 import com.bali.core.promo.CustomerCouponDao;
@@ -147,6 +146,11 @@ public class CouponServiceImpl implements CouponService {
 	@Override
 	public List<Coupon> fetchValidCouponsOn(Date date) {
 		return couponDao.fetchValidCouponsOn(date);
+	}
+
+	@Override
+	public List<Coupon> fetchAllValidCouponsOn(Date date) {
+		return couponDao.fetchAllValidCouponsOn(date);
 	}
 
 }

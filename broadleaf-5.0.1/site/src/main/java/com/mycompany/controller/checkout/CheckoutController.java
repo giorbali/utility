@@ -18,13 +18,20 @@ package com.mycompany.controller.checkout;
 
 import static org.broadleafcommerce.profile.web.core.CustomerState.getCustomer;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.broadleafcommerce.common.exception.ServiceException;
@@ -39,6 +46,7 @@ import org.broadleafcommerce.core.web.checkout.model.OrderInfoForm;
 import org.broadleafcommerce.core.web.checkout.model.ShippingInfoForm;
 import org.broadleafcommerce.core.web.controller.checkout.BroadleafCheckoutController;
 import org.broadleafcommerce.core.web.order.CartState;
+import org.broadleafcommerce.profile.core.domain.Customer;
 import org.broadleafcommerce.profile.web.core.CustomerState;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
@@ -57,6 +65,7 @@ import com.bali.core.order.service.SaldoService;
 import com.bali.core.promo.Coupon;
 import com.bali.core.promo.CouponOrderDao;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mycompany.controller.coupon.CouponPickForm;
 
 @Controller
@@ -80,9 +89,25 @@ public class CheckoutController extends BroadleafCheckoutController {
 			@ModelAttribute("customerCreditInfoForm") CustomerCreditInfoForm customerCreditInfoForm,
 			RedirectAttributes redirectAttributes) {
 		model.addAttribute("saldo", saldoService.fetchActualSaldoByCustomer(getCustomer()));
-		List<Coupon> coupons = couponService.fetchValidCouponsOn(DateTime.now().toDate());
-		model.addAttribute("coupons", coupons);
+		List<Coupon> coupons = couponService.fetchAllValidCouponsOn(DateTime.now().toDate());
 		List<Coupon> pickedCoupons = fetchPickedCoupons();
+		coupons.removeAll(pickedCoupons);
+		Map<Customer, Map<String, Coupon>> showCouponMap = Maps.newHashMap();
+		for (Coupon coupon : coupons) {
+			Map<String, Coupon> map;
+			if(showCouponMap.containsKey(coupon.getProvider())) {
+				map = showCouponMap.get(coupon.getProvider());
+				if(!map.containsKey(coupon.getName())) {
+					map.put(coupon.getName(), coupon);
+				}
+			} else {
+				map = Maps.newHashMap();
+				map.put(coupon.getName(), coupon);
+				showCouponMap.put(coupon.getProvider(), map);
+			}
+		}
+		List<Coupon> showCoupons = showCouponMap.values().stream().map(v -> v.values()).flatMap(c -> c.stream()).collect(Collectors.toList());
+		model.addAttribute("coupons", showCoupons);
 		long pickedCouponAmount = pickedCoupons.stream().mapToLong(c -> c.getAmount()).sum();
 		model.addAttribute("pickedCouponAmount", pickedCouponAmount);
 		return super.checkout(request, response, model, redirectAttributes);

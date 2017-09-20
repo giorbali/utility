@@ -7,13 +7,13 @@ import java.util.List;
 import org.broadleafcommerce.profile.core.domain.Customer;
 
 import com.bali.core.promo.Coupon;
-import com.bali.core.promo.CouponImpl;
 import com.bali.core.promo.CustomerCoupon;
 
 public interface CouponService {
 	
 	List<Coupon> fetchAllCoupons();
 	List<Coupon> fetchValidCouponsOn(Date date);
+	List<Coupon> fetchAllValidCouponsOn(Date date);
 	
 	Coupon fetchById(Long id);
 	

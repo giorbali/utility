@@ -177,5 +177,22 @@ public class CouponImpl implements Coupon {
 	public void setCode(String code) {
 		this.code = code;
 	}
+	
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 31 * result + id.hashCode();
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) return true;
+        if (!(o instanceof Coupon)) {
+            return false;
+        }
+        Coupon coupon = (Coupon) o;
+        return coupon.getId().equals(id);
+	}
 
 }
